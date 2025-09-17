@@ -1,28 +1,16 @@
 "use client"
 
 import { Check, Clipboard } from "lucide-react"
+import { toast } from "sonner"
+
 import { type Color } from "@/lib/colors"
+import { trackEvent } from "@/lib/events"
 import { useColors } from "@/hooks/use-colors"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 
 export function Color({ color }: { color: Color }) {
   const { format } = useColors()
   const { isCopied, copyToClipboard } = useCopyToClipboard()
-
-  const getColorValue = () => {
-    switch (format) {
-      case "hex":
-        return color.hex
-      case "rgb":
-        return `rgb(${color.rgb})`
-      case "hsl":
-        return `hsl(${color.hsl})`
-      case "className":
-        return color.className
-      default:
-        return color.hex
-    }
-  }
 
   return (
     <button
@@ -35,8 +23,16 @@ export function Color({ color }: { color: Color }) {
         } as React.CSSProperties
       }
       onClick={() => {
-        const value = getColorValue()
-        copyToClipboard(value)
+        copyToClipboard(color[format])
+        trackEvent({
+          name: "copy_color",
+          properties: {
+            color: color.id,
+            value: color[format],
+            format,
+          },
+        })
+        toast.success(`Copied ${color[format]} to clipboard.`)
       }}
     >
       {isCopied ? (
