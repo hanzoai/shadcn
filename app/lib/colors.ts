@@ -1,5 +1,6 @@
 import { z } from "zod"
-import { colors } from "@/registry/colors"
+
+import { colors } from "@/registry/registry-colors"
 
 const colorSchema = z.object({
   name: z.string(),
@@ -10,6 +11,7 @@ const colorSchema = z.object({
   rgb: z.string(),
   hsl: z.string(),
   foreground: z.string(),
+  oklch: z.string(),
 })
 
 const colorPaletteSchema = z.object({
@@ -21,10 +23,11 @@ export type ColorPalette = z.infer<typeof colorPaletteSchema>
 
 export function getColorFormat(color: Color) {
   return {
-    className: color.className,
+    className: `bg-${color.name}-100`,
     hex: color.hex,
-    rgb: `rgb(${color.rgb})`,
-    hsl: `hsl(${color.hsl})`,
+    rgb: color.rgb,
+    hsl: color.hsl,
+    oklch: color.oklch,
   }
 }
 
@@ -33,14 +36,14 @@ export type ColorFormat = keyof ReturnType<typeof getColorFormat>
 export function getColors() {
   const tailwindColors = colorPaletteSchema.array().parse(
     Object.entries(colors)
-      .map(([name, colorScale]) => {
-        if (!Array.isArray(colorScale)) {
+      .map(([name, color]) => {
+        if (!Array.isArray(color)) {
           return null
         }
 
         return {
           name,
-          colors: colorScale.map((color) => {
+          colors: color.map((color) => {
             const rgb = color.rgb.replace(
               /^rgb\((\d+),(\d+),(\d+)\)$/,
               "$1 $2 $3"
@@ -54,6 +57,10 @@ export function getColors() {
               rgb,
               hsl: color.hsl.replace(
                 /^hsl\(([\d.]+),([\d.]+%),([\d.]+%)\)$/,
+                "$1 $2 $3"
+              ),
+              oklch: color.oklch.replace(
+                /^oklch\(([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\)$/,
                 "$1 $2 $3"
               ),
               foreground: getForegroundFromBackground(rgb),
