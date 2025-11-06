@@ -19,6 +19,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { Download, GripVertical, Plus, Settings2, Trash2 } from "lucide-react"
 
 import { BuilderPreview } from "@/components/builder-preview"
+import { OpenInHButton } from "@/components/open-in-h-button"
 import { Button } from "@/registry/default/ui/button"
 import { Card } from "@/registry/default/ui/card"
 import { Input } from "@/registry/default/ui/input"
@@ -62,15 +63,15 @@ export default function EnhancedBuilder() {
 
   React.useEffect(() => {
     // Get blocks from registry
-    const blockIds = Object.keys(Index.default || {}).filter((key) => {
-      const item = Index.default[key]
+    const blockIds = Object.keys(Index).filter((key) => {
+      const item = Index[key]
       return item?.type === "components:block"
     })
     setBlocks(blockIds.sort())
 
     // Get UI components from registry
-    const componentIds = Object.keys(Index.default || {}).filter((key) => {
-      const item = Index.default[key]
+    const componentIds = Object.keys(Index).filter((key) => {
+      const item = Index[key]
       return item?.type === "components:ui"
     })
     setComponents(componentIds.sort())
@@ -534,6 +535,8 @@ ${renderItems(pageItems, 3)}
               </Button>
             </div>
             <Separator orientation="vertical" className="h-8" />
+            <OpenInHButton name="builder" />
+            <Separator orientation="vertical" className="h-8" />
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -582,9 +585,9 @@ ${renderItems(pageItems, 3)}
                   items={pageItems.map((item) => item.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="min-h-[600px] bg-background">
+                  <div className="relative min-h-[600px] bg-background pl-16">
                     {pageItems.length === 0 ? (
-                      <div className="flex h-96 items-center justify-center rounded-lg border border-dashed text-center">
+                      <div className="flex h-96 items-center justify-center rounded-lg border border-dashed text-center -ml-16">
                         <div className="space-y-2">
                           <p className="text-sm text-muted-foreground">
                             Your page is empty
