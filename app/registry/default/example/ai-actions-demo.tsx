@@ -1,36 +1,7 @@
-import { AIActions } from "@/registry/default/ui/ai-actions"
-
-const actions = [
-  {
-    id: "summarize",
-    label: "Summarize",
-    description: "Create a concise summary",
-    icon: <span>📝</span>,
-  },
-  {
-    id: "translate",
-    label: "Translate",
-    description: "Translate to another language",
-    icon: <span>🌐</span>,
-  },
-  {
-    id: "improve",
-    label: "Improve Writing",
-    description: "Enhance grammar and style",
-    icon: <span>✨</span>,
-  },
-  {
-    id: "explain",
-    label: "Explain",
-    description: "Break down complex topics",
-    icon: <span>💡</span>,
-  },
-]
-
-export default function AiActionsDemo() {
+export default function Demo() {
   return (
-    <div className="flex min-h-[400px] items-center justify-center p-8">
-      <AIActions actions={actions} />
+    <div className="flex h-[400px] items-center justify-center rounded-lg border bg-background">
+      <p className="text-sm text-muted-foreground">Demo coming soon</p>
     </div>
   )
 }
