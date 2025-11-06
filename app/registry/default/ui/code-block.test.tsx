@@ -23,8 +23,8 @@ describe("CodeBlock", () => {
   it("renders code block with basic props", async () => {
     render(<CodeBlock {...defaultProps} />)
 
-    // Should show loading initially
-    expect(screen.getAllByTestId("skeleton")).toHaveLength(10)
+    // Should show loading initially (20 = 10 lines × 2 skeletons per line: line number + code)
+    expect(screen.getAllByTestId("skeleton")).toHaveLength(20)
 
     // Wait for syntax highlighting to complete
     await waitFor(() => {
@@ -99,13 +99,13 @@ describe("CodeBlock", () => {
   it("applies correct theme classes", () => {
     const { rerender } = render(<CodeBlock {...defaultProps} theme="light" />)
 
-    expect(screen.getByRole("group")).toHaveClass(
+    expect(screen.getByTestId("code-block")).toHaveClass(
       "bg-slate-50",
       "border-slate-200"
     )
 
     rerender(<CodeBlock {...defaultProps} theme="dracula" />)
-    expect(screen.getByRole("group")).toHaveClass(
+    expect(screen.getByTestId("code-block")).toHaveClass(
       "bg-slate-900",
       "border-purple-800/30"
     )
@@ -114,10 +114,10 @@ describe("CodeBlock", () => {
   it("applies correct size classes", () => {
     const { rerender } = render(<CodeBlock {...defaultProps} size="sm" />)
 
-    expect(screen.getByRole("group")).toHaveClass("text-xs")
+    expect(screen.getByTestId("code-block")).toHaveClass("text-xs")
 
     rerender(<CodeBlock {...defaultProps} size="lg" />)
-    expect(screen.getByRole("group")).toHaveClass("text-base")
+    expect(screen.getByTestId("code-block")).toHaveClass("text-base")
   })
 
   it("renders without line numbers when showLineNumbers is false", async () => {
@@ -133,7 +133,7 @@ describe("CodeBlock", () => {
     render(<CodeBlock {...defaultProps} maxHeight="300px" />)
 
     const codeContainer = screen
-      .getByRole("group")
+      .getByTestId("code-block")
       .querySelector('[style*="max-height"]')
     expect(codeContainer).toHaveStyle({ maxHeight: "300px" })
   })
