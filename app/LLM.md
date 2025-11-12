@@ -434,7 +434,7 @@ curl http://localhost:3003/llm/docs/components/button
 - **shadcn**: GitHub logo, shadcn branding
 - **Hanzo**: Hanzo logo (OpenInHButton), Hanzo branding
 - **Files Modified**: 
-  - `components/open-in-v0-button.tsx` → `components/open-in-h-button.tsx`
+  - `components/open-in-hanzo-button.tsx` → `components/open-in-h-button.tsx`
   - Hanzo logo (H icon) replaces GitHub logo
 
 #### 4. Registry Structure

@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { HanzoLogo } from "@/components/hanzo-logo"
 import { Button, ButtonProps } from "@/registry/default/ui/button"
 import {
   Tooltip,
@@ -11,7 +12,6 @@ import {
 } from "@/registry/default/ui/tooltip"
 import { Block } from "@/registry/schema"
 import { Style } from "@/registry/styles"
-import { HanzoLogo } from "@/components/hanzo-logo"
 
 type Size = "default" | "icon"
 
@@ -36,7 +36,7 @@ function V0Tooltip({
   )
 }
 
-export function V0Button({
+export function HanzoButton({
   block,
   size = "default",
   disabled,
