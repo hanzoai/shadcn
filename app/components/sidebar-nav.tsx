@@ -4,24 +4,28 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { SidebarNavItem } from "types/nav"
 
+import { type DocsConfig } from "@/config/docs"
 import { cn } from "@/lib/utils"
 
-export interface DocsSidebarNavProps {
-  items: SidebarNavItem[]
-}
-
-export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
+export function DocsNav({ config }: { config: DocsConfig }) {
   const pathname = usePathname()
 
+  const items = config.sidebarNav
+
   return items.length ? (
-    <div className="w-full">
+    <div className="flex flex-col gap-6">
       {items.map((item, index) => (
-        <div key={index} className={cn("pb-4")}>
-          <h4 className="mb-1 rounded-md px-2 py-1 text-sm font-semibold">
-            {item.title}
+        <div key={index} className="flex flex-col gap-1">
+          <h4 className="rounded-md px-2 py-1 text-sm font-medium">
+            {item.title}{" "}
+            {item.label && (
+              <span className="ml-2 rounded-md bg-[#adfa1d] px-1.5 py-0.5 text-xs font-normal leading-none text-[#000000] no-underline group-hover:no-underline">
+                {item.label}
+              </span>
+            )}
           </h4>
           {item?.items?.length && (
-            <DocsSidebarNavItems items={item.items} pathname={pathname} />
+            <DocsNavItems items={item.items} pathname={pathname} />
           )}
         </div>
       ))}
@@ -29,28 +33,26 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
   ) : null
 }
 
-interface DocsSidebarNavItemsProps {
-  items: SidebarNavItem[]
-  pathname: string | null
-}
-
-export function DocsSidebarNavItems({
+function DocsNavItems({
   items,
   pathname,
-}: DocsSidebarNavItemsProps) {
+}: {
+  items: SidebarNavItem[]
+  pathname: string | null
+}) {
   return items?.length ? (
-    <div className="grid grid-flow-row auto-rows-max text-sm">
+    <div className="grid grid-flow-row auto-rows-max gap-0.5 text-sm">
       {items.map((item, index) =>
         item.href && !item.disabled ? (
           <Link
             key={index}
             href={item.href}
             className={cn(
-              "group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:underline",
+              "group relative flex h-8 w-full items-center rounded-lg px-2 after:absolute after:inset-x-0 after:inset-y-[-2px]  after:rounded-lg hover:bg-accent hover:text-accent-foreground ",
               item.disabled && "cursor-not-allowed opacity-60",
               pathname === item.href
-                ? "font-medium text-foreground"
-                : "text-muted-foreground"
+                ? "bg-accent font-medium text-accent-foreground"
+                : "font-normal text-foreground"
             )}
             target={item.external ? "_blank" : ""}
             rel={item.external ? "noreferrer" : ""}
