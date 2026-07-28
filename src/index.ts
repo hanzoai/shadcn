@@ -1,18 +1,17 @@
-// @hanzo/ui — shadcn backend.
+// @hanzo/shadcn — the shadcn-compatible React surface.
 //
-// The shadcn-compatible component surface: Radix primitives for behaviour
-// (a11y, portalling, keyboard) styled entirely with STANDARD design tokens
-// (`bg-popover`, `border-border`, `bg-primary`, `text-muted-foreground`, …) —
-// no app-private token names, so every component renders solid against the
-// Hanzo theme (`theme.css`) or any host that defines the standard shadcn
-// variables. Fonts are inherited or bound to `font-sans`/`font-mono` (Geist via
-// the theme); nothing here hard-codes a font family.
+// Radix primitives for behaviour (a11y, portalling, keyboard) styled entirely
+// with the STANDARD shadcn design tokens (`bg-popover`, `border-border`,
+// `bg-primary`, `text-muted-foreground`, …) — no app-private token names. The
+// package ships no CSS of its own: it renders against whatever host defines
+// those variables, which every shadcn app already does. Fonts are inherited or
+// bound to `font-sans`/`font-mono`; nothing here hard-codes a family.
 //
-// This barrel is the canonical component API `@hanzo/ui` exposes at its root.
-// The explicit named blocks below also serve as the manifest that
-// `scripts/gen-primitives.mjs` reads to emit the per-member `./primitives/*`
-// entrypoints (for hosts that modularize `@hanzo/ui` imports).
+// This barrel is the whole package. There are no per-component subpaths — the
+// build is ESM with `sideEffects: false`, so importing one name from the barrel
+// tree-shakes to one component. One door, not eighty-nine.
 
+export { cn } from './utils'
 export { AspectRatio } from './aspect-ratio'
 export { Avatar, AvatarImage, AvatarFallback } from './avatar'
 export { Badge, badgeVariants } from './badge'
