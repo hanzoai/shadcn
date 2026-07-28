@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck + build
+    runs-on: hanzo-build-linux-amd64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build
+        run: pnpm run build
+
+      # The failure this repo must never repeat: @hanzo/ui@8.0.25 shipped an
+      # exports entry pointing at a path that was not in the tarball. Pack, then
+      # assert every exports target actually exists inside it.
+      - name: Verify tarball matches the exports map
+        run: |
+          pnpm pack
+          tar tzf hanzo-shadcn-*.tgz | sed 's#^package/##' | sort > /tmp/tarfiles.txt
+          node -e '
+            const fs = require("fs")
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"))
+            const inTar = new Set(fs.readFileSync("/tmp/tarfiles.txt", "utf8").split("\n").filter(Boolean))
+            const targets = []
+            ;(function walk(v) {
+              if (typeof v === "string") return void targets.push(v)
+              if (v && typeof v === "object") Object.values(v).forEach(walk)
+            })(pkg.exports)
+            ;["main", "module", "types"].forEach((k) => pkg[k] && targets.push(pkg[k]))
+            let bad = 0
+            for (const t of new Set(targets)) {
+              const ok = inTar.has(t.replace(/^\.\//, ""))
+              if (!ok) bad++
+              console.log((ok ? "OK  " : "MISSING ") + t)
+            }
+            process.exit(bad ? 1 : 0)
+          '
