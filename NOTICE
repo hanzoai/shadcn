@@ -1,5 +1,19 @@
 Hanzo shadcn
-Copyright 2026 Hanzo AI, Inc.
+Copyright (c) 2023-present Hanzo AI, Inc.
 
 This product includes software developed at Hanzo AI, Inc.
-Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Licensed under either of
+
+  * Apache License, Version 2.0 (LICENSE-APACHE), or
+  * MIT license (LICENSE-MIT)
+
+at your option. SPDX-License-Identifier: MIT OR Apache-2.0
+
+This product includes component patterns from shadcn/ui
+(https://github.com/shadcn-ui/ui), licensed under the MIT License:
+
+    Copyright (c) 2023 shadcn
+
+The components here are Hanzo implementations on the standard shadcn token
+set and Radix UI primitives; the upstream license has not been changed.
