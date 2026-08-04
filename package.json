@@ -2,7 +2,7 @@
   "name": "@hanzo/shadcn",
   "version": "1.0.0",
   "description": "The shadcn-compatible React surface extracted from @hanzo/ui. Radix behaviour, Tailwind styling, standard shadcn tokens. @hanzo/ui renders on @hanzo/gui now; this is where its shadcn components went.",
-  "license": "MIT",
+  "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hanzoai/shadcn.git"
