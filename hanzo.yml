@@ -1,0 +1,41 @@
+# Canonical CI/CD config for hanzoai/shadcn — the one file both the hanzoai/ci
+# reusable (.hanzo/workflows/cicd.yml) and platform.hanzo.ai read.
+#
+# An npm package (@hanzo/shadcn), published from a tag. No image, no deploy.
+#
+# The gate is this repo's existing CI, kept whole because its third step is the
+# unusual and valuable one: pack the tarball and assert every path the exports
+# map points at is actually INSIDE it. That is here for a shipped failure —
+# @hanzo/ui@8.0.25 published an exports entry pointing at a file the tarball did
+# not contain, which typecheck and build both call green because both look at
+# the source tree, not the artifact. The check walks pkg.exports plus
+# main/module/types, compares against `tar tzf`, and exits non-zero on the first
+# miss.
+test:
+  - name: build
+    run: |
+      set -e
+      corepack enable
+      pnpm install --frozen-lockfile
+      pnpm run typecheck
+      pnpm run build
+      pnpm pack
+      tar tzf hanzo-shadcn-*.tgz | sed 's#^package/##' | sort > /tmp/tarfiles.txt
+      node -e '
+        const fs = require("fs")
+        const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"))
+        const inTar = new Set(fs.readFileSync("/tmp/tarfiles.txt", "utf8").split("\n").filter(Boolean))
+        const targets = []
+        ;(function walk(v) {
+          if (typeof v === "string") return void targets.push(v)
+          if (v && typeof v === "object") Object.values(v).forEach(walk)
+        })(pkg.exports)
+        ;["main", "module", "types"].forEach((k) => pkg[k] && targets.push(pkg[k]))
+        let bad = 0
+        for (const t of new Set(targets)) {
+          const ok = inTar.has(t.replace(/^\.\//, ""))
+          if (!ok) bad++
+          console.log((ok ? "OK  " : "MISSING ") + t)
+        }
+        process.exit(bad ? 1 : 0)
+      '
