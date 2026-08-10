@@ -1,0 +1,6 @@
+# esbuild's install script is what puts its platform binary in place. pnpm 11
+# refuses to run a dependency's install script unless it is allowed here, and
+# refuses fatally — strictDepBuilds defaults to true, so an unapproved build is
+# ERR_PNPM_IGNORED_BUILDS and the install exits non-zero.
+allowBuilds:
+  esbuild: true
