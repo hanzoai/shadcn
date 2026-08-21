@@ -103,6 +103,13 @@ key, because a keyless static export looks correct and reports nothing.
 
 ## Gotchas
 
+- **`pkg/tests` does not run.** `pnpm --filter tests test` dies in globalSetup
+  with `ReferenceError: __vite_ssr_exportName__ is not defined` — the package
+  pins `vitest ^2.1.9` and its vite-node cannot read the SSR transform the
+  workspace's `vite 8` emits. Measured identical on `hanzoai/ui` at `07d21522b`,
+  before this repo existed. Fixing it is a version decision (align the pin, or
+  give the package its own vite), so the `cli` gate builds and runs the binary
+  and leaves the suite out rather than shipping a gate that cannot pass.
 - `scripts/sync-templates.sh` pushes to `github.com/shadcn/<name>` — an org we do
   not control. It is upstream's, manual-only, and running it attempts writes to
   someone else's repos.
