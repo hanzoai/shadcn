@@ -4,3 +4,12 @@
 # ERR_PNPM_IGNORED_BUILDS and the install exits non-zero.
 allowBuilds:
   esbuild: true
+
+packages:
+  - "app"
+  - "apps/*"
+  - "pkg/*"
+  - "!**/test/**"
+  - "!**/fixtures/**"
+  - "!**/temp/**"
+  - "!pkg/tests/temp/**"
