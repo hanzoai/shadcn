@@ -1,24 +1,33 @@
 # Canonical CI/CD config for hanzoai/shadcn — the one file both the hanzoai/ci
 # reusable (.hanzo/workflows/cicd.yml) and platform.hanzo.ai read.
 #
-# An npm package (@hanzo/shadcn), published from a tag. No image, no deploy.
-#
-# The gate is this repo's existing CI, kept whole because its third step is the
-# unusual and valuable one: pack the tarball and assert every path the exports
-# map points at is actually INSIDE it. That is here for a shipped failure —
-# @hanzo/ui@8.0.25 published an exports entry pointing at a file the tarball did
-# not contain, which typecheck and build both call green because both look at
-# the source tree, not the artifact. The check walks pkg.exports plus
-# main/module/types, compares against `tar tzf`, and exits non-zero on the first
-# miss.
+# Everything shadcn-lineage lives here: the CLI (pkg/cli), the component surface
+# (pkg/components, published as @hanzo/shadcn), the registry and docs sites
+# (app/, apps/v4/) and the scaffolds the CLI clones (templates/).
+
+images:
+  # ui.hanzo.ai — the docs site and the registry JSON the CLI reads, built from
+  # app/ as a Next static export and served by ghcr.io/hanzoai/static.
+  - name: shadcn
+    context: .
+    dockerfile: Dockerfile
+    repo: ghcr.io/hanzoai/shadcn
+    platforms: [linux/amd64]
+    build_secrets: [PUBLISHABLE_KEY]
+
 test:
-  - name: build
+  - name: components
+    # The third step is the unusual one: pack the tarball and assert every path
+    # the exports map points at is actually INSIDE it. typecheck and build both
+    # read the source tree, so an exports entry naming a file the tarball does
+    # not carry is green to both and broken for every consumer.
     run: |
       set -e
       corepack enable
       pnpm install --frozen-lockfile
-      pnpm run typecheck
-      pnpm run build
+      pnpm --filter @hanzo/shadcn run typecheck
+      pnpm --filter @hanzo/shadcn run build
+      cd pkg/components
       pnpm pack
       tar tzf hanzo-shadcn-*.tgz | sed 's#^package/##' | sort > /tmp/tarfiles.txt
       node -e '
@@ -39,3 +48,14 @@ test:
         }
         process.exit(bad ? 1 : 0)
       '
+
+  - name: cli
+    # `npx shadcn add <component>` is the product. Build it, then run the
+    # integration suite in pkg/tests, which drives the built binary against
+    # fixture projects.
+    run: |
+      set -e
+      corepack enable
+      pnpm install --frozen-lockfile
+      pnpm --filter shadcn run build
+      pnpm --filter tests run test

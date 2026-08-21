@@ -8,7 +8,7 @@ export default defineConfig({
       "**/node_modules/**",
       "**/fixtures/**",
       "**/templates/**",
-      "**/pkgs/tests/**",
+      "**/pkg/tests/**",
     ],
   },
   plugins: [
