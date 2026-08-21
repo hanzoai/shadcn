@@ -101,6 +101,27 @@ in the wrong directory is a gate that can never be scheduled.
 can supply it — and the Dockerfile fails closed on an empty or `pk_`-prefixed
 key, because a keyless static export looks correct and reports nothing.
 
+## The image lane needs one credential this repo does not have yet
+
+`cicd` fails at **"Fetch deploy credentials from KMS"**, and nothing after it
+runs. The `images:` block declares `build_secrets: [PUBLISHABLE_KEY]`, so
+hanzoai/ci reads KMS `deploy/PUBLISHABLE_KEY` using the runner's machine
+identity — and that identity is provisioned on `hanzoai/ui`, where the same step
+passes, but not here. Measured on both: same reusable, same step, ui green,
+shadcn red.
+
+The fix is repo configuration, not code: give `hanzoai/shadcn` the
+`KMS_CLIENT_ID` and `KMS_CLIENT_SECRET` secrets `hanzoai/ui` already has. The
+block stays declared because it is where the site is built from now; deleting it
+would leave ui.hanzo.ai with no builder in any repo and nothing failing to say
+so. The two `test:` gates both pass — `components` (typecheck, build, and the
+tarball/exports assertion) and `cli` (build, then run the binary).
+
+Until the credential lands, ui.hanzo.ai keeps serving the digest pinned in
+`hanzoai/universe` `charts/app/values/hanzo/ui.yaml`, which still names
+`ghcr.io/hanzoai/ui:5.7.7`. Repin it to `ghcr.io/hanzoai/shadcn:<tag>` on the
+first green image build — not before, or the pod pulls a tag that does not exist.
+
 ## Gotchas
 
 - **`pkg/tests` does not run.** `pnpm --filter tests test` dies in globalSetup
