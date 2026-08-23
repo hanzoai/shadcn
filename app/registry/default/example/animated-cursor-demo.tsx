@@ -1,4 +1,4 @@
-import { AnimatedCursor } from "@hanzo/ui/animation/animated-cursor"
+import { AnimatedCursor } from "@hanzo/ui-shadcn/animation/animated-cursor"
 
 export default function AnimatedCursorDemo() {
   return (

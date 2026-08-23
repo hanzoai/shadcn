@@ -1,4 +1,4 @@
-import { AnimatedTooltip } from "@hanzo/ui/animation/animated-tooltip"
+import { AnimatedTooltip } from "@hanzo/ui-shadcn/animation/animated-tooltip"
 
 import { Button } from "@/registry/default/ui/button"
 
