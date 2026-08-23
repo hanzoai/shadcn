@@ -18,6 +18,17 @@ import {
   Toaster as NewYorkToaster,
 } from "@/registry/default/ui/toaster"
 
+/**
+ * The registry document — html, body and every provider the registry surfaces
+ * need. It is a COMPONENT rather than the app's one root layout because the
+ * site now serves two substrates: this one (Radix + Tailwind, which is what the
+ * registry ships to customers) and `@hanzo/ui` v8 on `@hanzo/gui`, which brings
+ * its own root and must not inherit Tailwind's body.
+ *
+ * Next allows exactly one root layout per route group, so each group that wants
+ * this shell calls it here instead of holding a copy of it.
+ */
+
 const META_THEME_COLORS = {
   light: "white",
   dark: "black",
@@ -85,60 +96,54 @@ export const viewport: Viewport = {
   ],
 }
 
-interface RootLayoutProps {
-  children: React.ReactNode
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+export function Document({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
               try {
                 if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
                 }
               } catch (_) {}
             `,
-            }}
-          />
-        </head>
-        <body
-          className={cn(
-            "min-h-svh bg-background font-sans antialiased",
-            fontSans.variable,
-            fontMono.variable
-          )}
+          }}
+        />
+      </head>
+      <body
+        className={cn(
+          "min-h-svh bg-background font-sans antialiased",
+          fontSans.variable,
+          fontMono.variable
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          enableColorScheme
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            enableColorScheme
-          >
-            <Web3Provider>
-              <ActiveThemeProvider initialTheme="neutral">
-                <SkipLinks />
-                <div vaul-drawer-wrapper="">
-                  <div className="relative flex min-h-svh flex-col bg-background">
-                    {children}
-                  </div>
+          <Web3Provider>
+            <ActiveThemeProvider initialTheme="neutral">
+              <SkipLinks />
+              <div vaul-drawer-wrapper="">
+                <div className="relative flex min-h-svh flex-col bg-background">
+                  {children}
                 </div>
-                <TailwindIndicator />
-                <ThemeSwitcher />
-                <Analytics />
-                <NewYorkToaster />
-                <DefaultToaster />
-                <NewYorkSonner />
-              </ActiveThemeProvider>
-            </Web3Provider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </>
+              </div>
+              <TailwindIndicator />
+              <ThemeSwitcher />
+              <Analytics />
+              <NewYorkToaster />
+              <DefaultToaster />
+              <NewYorkSonner />
+            </ActiveThemeProvider>
+          </Web3Provider>
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }
