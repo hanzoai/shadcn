@@ -1,12 +1,15 @@
+import { Document } from "@/components/document"
+
+export { metadata, viewport } from "@/components/document"
+
 /**
- * Minimal layout for embedded examples
- * Does not include SiteHeader or SiteFooter
- * Used for clean example displays in iframes
+ * Embedded examples — the registry document with no header and no footer, so an
+ * iframe shows the example and nothing around it.
  */
 export default function EmbedLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return <Document>{children}</Document>
 }
