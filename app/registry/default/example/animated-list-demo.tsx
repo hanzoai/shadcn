@@ -1,4 +1,4 @@
-import { AnimatedList } from "@hanzo/ui/animation/animated-list"
+import { AnimatedList } from "@hanzo/ui-shadcn/animation/animated-list"
 
 const listItems = [
   {
