@@ -6,7 +6,7 @@ import { Button } from "@/registry/default/ui/button"
 
 import { HomeContent } from "./home-content"
 
-const title = "Hanzo UI Component Library"
+const title = "The Hanzo registry"
 const description =
   "Beautifully designed components built by Hanzo AI. Accessible. Customizable. Open Source. Built with React and Tailwind CSS."
 
