@@ -1,4 +1,4 @@
-import { AnimatedTestimonials } from "@hanzo/ui/animation/animated-testimonials"
+import { AnimatedTestimonials } from "@hanzo/ui-shadcn/animation/animated-testimonials"
 
 const testimonials = [
   {

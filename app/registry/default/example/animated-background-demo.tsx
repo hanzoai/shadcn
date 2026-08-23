@@ -1,4 +1,4 @@
-import { AnimatedBackground } from "@hanzo/ui/animation/animated-background"
+import { AnimatedBackground } from "@hanzo/ui-shadcn/animation/animated-background"
 
 export default function AnimatedBackgroundDemo() {
   return (

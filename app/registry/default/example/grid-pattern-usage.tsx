@@ -1,6 +1,6 @@
 "use client"
 
-import { GridPattern, GridPatternPresets } from "@hanzo/ui/pattern/grid-pattern"
+import { GridPattern, GridPatternPresets } from "@hanzo/ui-shadcn/pattern/grid-pattern"
 
 export function GridPatternHero() {
   return (
