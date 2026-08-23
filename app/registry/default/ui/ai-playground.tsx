@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Grid } from "@hanzo/ui/grid"
 import {
   AlertCircle,
   Check,
@@ -191,7 +192,7 @@ Your message: "${userMessage.content}"`
     <Card className={cn("w-full max-w-4xl", className)}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
+          <div>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5" />
               AI Playground
@@ -227,184 +228,203 @@ Your message: "${userMessage.content}"`
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Configuration Panel */}
-        {showConfig && (
-          <div className="rounded-lg border bg-muted/50 p-4 space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="model">Model</Label>
-                <Select
-                  value={config.model}
-                  onValueChange={(value: AIModel) =>
-                    setConfig((prev) => ({ ...prev, model: value }))
-                  }
-                >
-                  <SelectTrigger id="model">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {AI_MODELS.map((model) => (
-                      <SelectItem key={model.value} value={model.value}>
-                        <div className="flex flex-col">
-                          <span>{model.label}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {model.provider}
-                          </span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+      <CardContent>
+        <Grid columns={1} gap={16}>
+          {/* Configuration Panel */}
+          {showConfig && (
+            <Grid
+              columns={1}
+              gap={16}
+              className="rounded-lg border bg-muted/50 p-4"
+            >
+              {/* Two controls side by side once there is room for both, one
+                  above the other when there is not. The floor measures the
+                  column, so no breakpoint says where that happens. */}
+              <Grid columns={{ min: 260, max: 2 }} gap={16}>
+                <Grid columns={1} gap={8}>
+                  <Label htmlFor="model">Model</Label>
+                  <Select
+                    value={config.model}
+                    onValueChange={(value: AIModel) =>
+                      setConfig((prev) => ({ ...prev, model: value }))
+                    }
+                  >
+                    <SelectTrigger id="model">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {AI_MODELS.map((model) => (
+                        <SelectItem key={model.value} value={model.value}>
+                          <Grid columns={1} gap={0}>
+                            <span>{model.label}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {model.provider}
+                            </span>
+                          </Grid>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Grid>
 
-              <div className="space-y-2">
-                <Label htmlFor="max-tokens">
-                  Max Tokens: {config.maxTokens}
+                <Grid columns={1} gap={8}>
+                  <Label htmlFor="max-tokens">
+                    Max Tokens: {config.maxTokens}
+                  </Label>
+                  <Slider
+                    id="max-tokens"
+                    min={100}
+                    max={4000}
+                    step={100}
+                    value={[config.maxTokens]}
+                    onValueChange={(value) =>
+                      setConfig((prev) => ({ ...prev, maxTokens: value[0] }))
+                    }
+                    className="w-full"
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid columns={1} gap={8}>
+                <Label htmlFor="temperature">
+                  Temperature: {config.temperature.toFixed(1)}
                 </Label>
                 <Slider
-                  id="max-tokens"
-                  min={100}
-                  max={4000}
-                  step={100}
-                  value={[config.maxTokens]}
+                  id="temperature"
+                  min={0}
+                  max={2}
+                  step={0.1}
+                  value={[config.temperature]}
                   onValueChange={(value) =>
-                    setConfig((prev) => ({ ...prev, maxTokens: value[0] }))
+                    setConfig((prev) => ({ ...prev, temperature: value[0] }))
                   }
                   className="w-full"
                 />
-              </div>
-            </div>
+                <p className="text-xs text-muted-foreground">
+                  Lower values make the output more focused and deterministic
+                </p>
+              </Grid>
 
-            <div className="space-y-2">
-              <Label htmlFor="temperature">
-                Temperature: {config.temperature.toFixed(1)}
-              </Label>
-              <Slider
-                id="temperature"
-                min={0}
-                max={2}
-                step={0.1}
-                value={[config.temperature]}
-                onValueChange={(value) =>
-                  setConfig((prev) => ({ ...prev, temperature: value[0] }))
-                }
-                className="w-full"
-              />
-              <p className="text-xs text-muted-foreground">
-                Lower values make the output more focused and deterministic
-              </p>
-            </div>
+              <Grid columns={1} gap={8}>
+                <Label htmlFor="system-prompt">System Prompt</Label>
+                <Textarea
+                  id="system-prompt"
+                  placeholder="Enter system prompt..."
+                  value={config.systemPrompt}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      systemPrompt: e.target.value,
+                    }))
+                  }
+                  className="min-h-[80px] resize-none"
+                />
+              </Grid>
+            </Grid>
+          )}
 
-            <div className="space-y-2">
-              <Label htmlFor="system-prompt">System Prompt</Label>
-              <Textarea
-                id="system-prompt"
-                placeholder="Enter system prompt..."
-                value={config.systemPrompt}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    systemPrompt: e.target.value,
-                  }))
-                }
-                className="min-h-[80px] resize-none"
-              />
-            </div>
-          </div>
-        )}
+          {/* Error Alert */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-        {/* Error Alert */}
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {/* Messages Container */}
-        <div className="rounded-lg border bg-muted/30 min-h-[300px] max-h-[500px] overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-[280px] text-muted-foreground">
-              <Sparkles className="h-8 w-8 mb-2 opacity-50" />
-              <p className="text-sm">Start a conversation with AI</p>
-              <p className="text-xs mt-1">
-                Using {AI_MODELS.find((m) => m.value === config.model)?.label}
-              </p>
-            </div>
-          ) : (
-            <>
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex gap-3",
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "rounded-lg px-4 py-2 max-w-[80%] relative group",
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    )}
+          {/* Messages Container */}
+          <Grid
+            columns={1}
+            gap={16}
+            className="rounded-lg border bg-muted/30 min-h-[300px] max-h-[500px] overflow-y-auto p-4"
+            style={{ alignContent: "start" }}
+          >
+            {messages.length === 0 ? (
+              <Grid
+                columns={1}
+                gap={4}
+                className="h-[280px] text-muted-foreground"
+                style={{ justifyItems: "center", alignContent: "center" }}
+              >
+                <Sparkles className="h-8 w-8 opacity-50" />
+                <p className="text-sm">Start a conversation with AI</p>
+                <p className="text-xs">
+                  Using {AI_MODELS.find((m) => m.value === config.model)?.label}
+                </p>
+              </Grid>
+            ) : (
+              <>
+                {messages.map((message) => (
+                  // One full-width track; the bubble is placed at one end of
+                  // it. `justify-end` on a flex row did the same thing by
+                  // pushing a sibling that is not there.
+                  <Grid
+                    key={message.id}
+                    columns={1}
+                    gap={0}
+                    style={{
+                      justifyItems: message.role === "user" ? "end" : "start",
+                    }}
                   >
-                    {message.role === "assistant" && message.model && (
-                      <div className="text-xs opacity-70 mb-1">
-                        {
-                          AI_MODELS.find((m) => m.value === message.model)
-                            ?.label
-                        }
+                    <div
+                      className={cn(
+                        "rounded-lg px-4 py-2 max-w-[80%] relative group",
+                        message.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted"
+                      )}
+                    >
+                      {message.role === "assistant" && message.model && (
+                        <div className="text-xs opacity-70 mb-1">
+                          {
+                            AI_MODELS.find((m) => m.value === message.model)
+                              ?.label
+                          }
+                        </div>
+                      )}
+                      <div className="whitespace-pre-wrap break-words">
+                        {message.content}
                       </div>
-                    )}
-                    <div className="whitespace-pre-wrap break-words">
-                      {message.content}
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-xs opacity-50">
+                          {message.timestamp.toLocaleTimeString()}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleCopy(message)}
+                          className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          {copiedId === message.id ? (
+                            <Check className="h-3 w-3" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs opacity-50">
-                        {message.timestamp.toLocaleTimeString()}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleCopy(message)}
-                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        {copiedId === message.id ? (
-                          <Check className="h-3 w-3" />
-                        ) : (
-                          <Copy className="h-3 w-3" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex gap-3">
-                  <div className="rounded-lg px-4 py-2 bg-muted">
+                  </Grid>
+                ))}
+                {isLoading && (
+                  <div className="w-fit rounded-lg px-4 py-2 bg-muted">
                     <Loader2 className="h-4 w-4 animate-spin" />
                   </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </>
-          )}
-        </div>
+                )}
+                <div ref={messagesEndRef} />
+              </>
+            )}
+          </Grid>
 
-        {/* Input Area */}
-        <div className="flex gap-2">
-          <Textarea
-            ref={textareaRef}
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isLoading}
-            className="min-h-[80px] resize-none flex-1"
-          />
-          <div className="flex flex-col gap-2">
+          {/* Input Area */}
+          <Grid columns="minmax(0, 1fr) auto" gap={8}>
+            <Textarea
+              ref={textareaRef}
+              placeholder="Type your message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLoading}
+              className="min-h-[80px] resize-none"
+            />
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
@@ -416,8 +436,8 @@ Your message: "${userMessage.content}"`
                 <Send className="h-4 w-4" />
               )}
             </Button>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       </CardContent>
 
       <CardFooter className="text-xs text-muted-foreground">
