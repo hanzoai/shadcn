@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Grid } from "@hanzo/ui/grid"
 import {
   Calculator,
   ChevronRight,
@@ -194,7 +195,7 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
         >
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <div
                   className={cn(
                     "flex h-8 w-8 items-center justify-center rounded-lg",
@@ -216,7 +217,7 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
                   )}
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 {onToolToggle && (
                   <Button
                     variant="ghost"
@@ -244,44 +245,48 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
             </p>
 
             {isSelected && Object.keys(params).length > 0 && (
-              <div className="space-y-3 border-t pt-3">
+              <Grid columns={1} gap={12} className="border-t pt-3">
                 <h4 className="text-sm font-medium">Parameters</h4>
-                {Object.entries(params).map(([paramName, paramValue]) => (
-                  <div key={paramName} className="space-y-1">
-                    <label className="text-xs font-medium capitalize">
-                      {paramName.replace(/_/g, " ")}
-                    </label>
-                    {typeof paramValue === "string" &&
-                    paramValue.length > 50 ? (
-                      <Textarea
-                        value={params[paramName] || ""}
-                        onChange={(e) =>
-                          handleParameterChange(
-                            tool.name,
-                            paramName,
-                            e.target.value
-                          )
-                        }
-                        placeholder={`Enter ${paramName}`}
-                        className="text-xs"
-                        rows={3}
-                      />
-                    ) : (
-                      <Input
-                        value={params[paramName] || ""}
-                        onChange={(e) =>
-                          handleParameterChange(
-                            tool.name,
-                            paramName,
-                            e.target.value
-                          )
-                        }
-                        placeholder={`Enter ${paramName}`}
-                        className="text-xs"
-                      />
-                    )}
-                  </div>
-                ))}
+                {/* One field per parameter, two-up as soon as the card is wide
+                    enough to hold two 220px fields. */}
+                <Grid columns={{ min: 220, max: 2 }} gap={12}>
+                  {Object.entries(params).map(([paramName, paramValue]) => (
+                    <Grid key={paramName} columns={1} gap={4}>
+                      <label className="text-xs font-medium capitalize">
+                        {paramName.replace(/_/g, " ")}
+                      </label>
+                      {typeof paramValue === "string" &&
+                      paramValue.length > 50 ? (
+                        <Textarea
+                          value={params[paramName] || ""}
+                          onChange={(e) =>
+                            handleParameterChange(
+                              tool.name,
+                              paramName,
+                              e.target.value
+                            )
+                          }
+                          placeholder={`Enter ${paramName}`}
+                          className="text-xs"
+                          rows={3}
+                        />
+                      ) : (
+                        <Input
+                          value={params[paramName] || ""}
+                          onChange={(e) =>
+                            handleParameterChange(
+                              tool.name,
+                              paramName,
+                              e.target.value
+                            )
+                          }
+                          placeholder={`Enter ${paramName}`}
+                          className="text-xs"
+                        />
+                      )}
+                    </Grid>
+                  ))}
+                </Grid>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation()
@@ -303,7 +308,7 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
                     </>
                   )}
                 </Button>
-              </div>
+              </Grid>
             )}
           </CardContent>
         </Card>
@@ -311,33 +316,29 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
     }
 
     return (
-      <div ref={ref} className={cn("space-y-4", className)} {...props}>
+      <Grid ref={ref} columns={1} gap={16} className={className} {...props}>
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Wrench className="h-5 w-5" />
-            <h3 className="font-semibold">AI Tools</h3>
-            <Badge variant="secondary">
-              {tools.filter((t) => t.enabled).length} enabled
-            </Badge>
-          </div>
+        <div className="flex items-center gap-2">
+          <Wrench className="h-5 w-5" />
+          <h3 className="font-semibold">AI Tools</h3>
+          <Badge variant="secondary">
+            {tools.filter((t) => t.enabled).length} enabled
+          </Badge>
         </div>
 
         {/* Search */}
         {searchable && (
-          <div className="space-y-2">
-            <Input
-              placeholder="Search tools..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full"
-            />
-          </div>
+          <Input
+            placeholder="Search tools..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full"
+          />
         )}
 
         {/* Tools */}
         <ScrollArea className="h-[400px]">
-          <div className="space-y-4">
+          <Grid columns={1} gap={16}>
             {showCategories
               ? Object.entries(categorizedTools).map(
                   ([category, categoryTools]) => {
@@ -345,18 +346,18 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
                       categoryIcons[category as keyof typeof categoryIcons] ||
                       categoryIcons.default
                     return (
-                      <div key={category} className="space-y-2">
-                        <div className="flex items-center space-x-2">
+                      <Grid key={category} columns={1} gap={8}>
+                        <div className="flex items-center gap-2">
                           <CategoryIcon className="h-4 w-4 text-muted-foreground" />
                           <h4 className="font-medium text-sm">{category}</h4>
                           <Separator className="flex-1" />
                         </div>
-                        <div className="space-y-2 pl-6">
+                        <Grid columns={1} gap={8} className="pl-6">
                           {categoryTools.map((tool) => (
                             <ToolCard key={tool.name} tool={tool} />
                           ))}
-                        </div>
-                      </div>
+                        </Grid>
+                      </Grid>
                     )
                   }
                 )
@@ -365,21 +366,26 @@ const AITools = React.forwardRef<HTMLDivElement, AIToolsProps>(
                 ))}
 
             {filteredTools.length === 0 && (
-              <div className="text-center py-8">
-                <Wrench className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+              <Grid
+                columns={1}
+                gap={4}
+                className="py-8 text-center"
+                style={{ justifyItems: "center" }}
+              >
+                <Wrench className="h-12 w-12 text-muted-foreground/50" />
                 <h4 className="font-medium text-muted-foreground">
                   No tools found
                 </h4>
                 <p className="text-sm text-muted-foreground">
                   Try adjusting your search criteria
                 </p>
-              </div>
+              </Grid>
             )}
-          </div>
+          </Grid>
         </ScrollArea>
 
         {children}
-      </div>
+      </Grid>
     )
   }
 )
