@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@hanzo/font": "^1.8.0",
     "@workspace/ui": "workspace:*",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",

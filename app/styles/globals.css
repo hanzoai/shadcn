@@ -8,6 +8,23 @@
   --breakpoint-4xl: 2000px;
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+
+  /* Zen runs light against the Basel Grotesk it replaces. The two weights the
+     old site actually loaded were fitted by pixel residual: Basel Book is Zen
+     wght 497 and Basel Medium is Zen wght 606, both within 1.6% of the original
+     on every outline ratio. Zen is variable over 100-900, so stating the two
+     fitted values on Tailwind's weight scale is the whole correction, in one
+     place, instead of a class on every element.
+
+     semibold and bold carry the same ~100 offset so the scale stays monotonic.
+     Basel had no face at either step -- the site loaded Book and Medium and
+     nothing else, so `font-semibold` and `font-bold` both rendered Medium, the
+     second one synthetically emboldened. They are real weights now. */
+  --font-weight-normal: 497;
+  --font-weight-medium: 606;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 800;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

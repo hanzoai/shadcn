@@ -8,6 +8,22 @@ import { type RegistryItem } from "./schema"
 
 export const fonts: RegistryItem[] = [
   {
+    name: "font-zen",
+    type: "registry:file",
+    title: "Zen",
+    description: "The Hanzo type family. Variable over 100-900.",
+    dependencies: ["@hanzo/font"],
+    files: [],
+  },
+  {
+    name: "font-zen-mono",
+    type: "registry:file",
+    title: "Zen Mono",
+    description: "Monospace version of Zen.",
+    dependencies: ["@hanzo/font"],
+    files: [],
+  },
+  {
     name: "font-inter",
     type: "registry:file",
     title: "Inter",

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { GeistMono } from "geist/font/mono"
-import { GeistSans } from "geist/font/sans"
+
+import { fontMono, fontSans } from "@/lib/fonts"
 
 export const metadata: Metadata = { title: "@hanzo/ui gallery" }
 
@@ -24,10 +24,12 @@ export default function BareLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${fontSans.variable} ${fontMono.variable}`}
       suppressHydrationWarning
     >
-      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>{children}</body>
+      <body className={`${fontSans.variable} ${fontMono.variable}`}>
+        {children}
+      </body>
     </html>
   )
 }
