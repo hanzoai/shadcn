@@ -2,11 +2,8 @@ import { Document } from "@/components/document"
 
 export { metadata, viewport } from "@/components/document"
 
-/**
- * Embedded examples — the registry document with no header and no footer, so an
- * iframe shows the example and nothing around it.
- */
-export default function EmbedLayout({
+/** A single registry component, full-bleed, for the block viewer. */
+export default function ViewLayout({
   children,
 }: {
   children: React.ReactNode
