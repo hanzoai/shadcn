@@ -3,7 +3,43 @@ import { createMDX } from "@hanzo/docs-mdx/next"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Transpile packages that might have issues with pnpm symlinks
-  transpilePackages: ["chrono-node", "@hanzo/ui"],
+  transpilePackages: ["chrono-node", "@hanzo/ui-shadcn"],
+
+  // WEBPACK, and both scripts say so.
+  //
+  // @hanzo/ui renders through @hanzo/gui, which is react-native-web here, and
+  // the react-native-* packages in that graph choose a platform by FILE
+  // EXTENSION rather than by an exports condition: `./elements` means
+  // `elements.web.js` on the web and `elements.js` on a device, both shipped in
+  // the same tarball. A resolver that does not try `.web.*` first takes the
+  // device build and dies inside Fabric's TurboModuleRegistry, a native binding
+  // that cannot exist in a browser.
+  //
+  // Turbopack's `resolveExtensions` does not reach into node_modules — measured:
+  // with `.web.js` first it still resolved `react-native-svg/lib/module/
+  // ReactNativeSVG.js`, the device build. Webpack's does, which is why the site
+  // builds and serves on webpack. `react-native$` is exact-match: the deep
+  // `react-native/Libraries/…` paths a device build reaches for must stay
+  // unresolved rather than be silently pointed at react-native-web.
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "react-native$": "react-native-web",
+    }
+    config.resolve.extensions = [
+      ".web.tsx",
+      ".web.ts",
+      ".web.jsx",
+      ".web.js",
+      ".web.mjs",
+      ...config.resolve.extensions,
+    ]
+    // @wagmi/core reaches an optional connector through `import('accounts')`
+    // marked `turbopackOptional`, a comment only Turbopack reads. The package
+    // already handles the module being absent; webpack needs to be told it is.
+    config.resolve.fallback = { ...config.resolve.fallback, accounts: false }
+    return config
+  },
 
   // The docs site is a static export, wherever it is built. It is served by
   // hanzoai/static; `next dev` is unaffected by this.

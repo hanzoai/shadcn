@@ -57,8 +57,9 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 
 # Every @hanzo/* the app imports -- @hanzo/event, @hanzo/docs-*, @hanzo/logo,
-# and @hanzo/ui (npm:@hanzo/ui-shadcn@^5) -- arrives from npm already built. None
-# is a workspace member here, so there is no dependency to build first.
+# @hanzo/ui + @hanzo/gui (the v8 surface) and @hanzo/ui-shadcn (the registry's
+# own v5 components) -- arrives from npm already built. None is a workspace
+# member here, so there is no dependency to build first.
 #
 # Builds the component registry, then the site (app/package.json build script).
 #
