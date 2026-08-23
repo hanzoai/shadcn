@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Grid } from "@hanzo/ui/grid"
 import { cva, type VariantProps } from "class-variance-authority"
 import {
   BarChart3,
@@ -319,30 +320,36 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
 
   if (isAnalyzing) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-sm text-muted-foreground">Analyzing image...</p>
-        </div>
-      </div>
+      <Grid
+        columns={1}
+        gap={16}
+        className="h-64"
+        style={{ placeContent: "center", justifyItems: "center" }}
+      >
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="text-sm text-muted-foreground">Analyzing image...</p>
+      </Grid>
     )
   }
 
   if (!results) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <Eye className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            Upload an image to see analysis results
-          </p>
-        </div>
-      </div>
+      <Grid
+        columns={1}
+        gap={16}
+        className="h-64 text-center"
+        style={{ placeContent: "center", justifyItems: "center" }}
+      >
+        <Eye className="h-8 w-8 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">
+          Upload an image to see analysis results
+        </p>
+      </Grid>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <Grid columns={1} gap={16}>
       {/* Export Controls */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Analysis Results</h3>
@@ -374,132 +381,163 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
           <TabsTrigger value="details">Details</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
-          {/* Scene Description */}
-          {results.description && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Scene Description
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">{results.description}</p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="mt-2 h-6 px-2"
-                  onClick={() => copyToClipboard(results.description!)}
-                >
-                  <Copy className="h-3 w-3" />
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+        <TabsContent value="overview">
+          <Grid columns={1} gap={16}>
+            {/* Scene Description */}
+            {results.description && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Scene Description
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm">{results.description}</p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 h-6 px-2"
+                    onClick={() => copyToClipboard(results.description!)}
+                  >
+                    <Copy className="h-3 w-3" />
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Tags */}
-          {results.tags && results.tags.length > 0 && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center">
-                  <Tag className="h-4 w-4 mr-2" />
-                  Tags
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {results.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {tag.label} ({Math.round(tag.confidence * 100)}%)
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+            {/* Tags */}
+            {results.tags && results.tags.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center">
+                    <Tag className="h-4 w-4 mr-2" />
+                    Tags
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {results.tags.map((tag, index) => (
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
+                        {tag.label} ({Math.round(tag.confidence * 100)}%)
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Sentiment */}
-          {results.sentiment && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center">
-                  <Smile className="h-4 w-4 mr-2" />
-                  Sentiment Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Emotion:</span>
-                    <Badge>{results.sentiment.emotion}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Confidence:</span>
-                    <span className="text-sm">
-                      {Math.round(results.sentiment.confidence * 100)}%
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+            {/* Sentiment */}
+            {results.sentiment && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center">
+                    <Smile className="h-4 w-4 mr-2" />
+                    Sentiment Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Grid columns={1} gap={8}>
+                    <Grid
+                      columns="minmax(0, 1fr) auto"
+                      gap={8}
+                      style={{ alignItems: "center" }}
+                    >
+                      <span className="text-sm">Emotion:</span>
+                      <Badge>{results.sentiment.emotion}</Badge>
+                    </Grid>
+                    <Grid
+                      columns="minmax(0, 1fr) auto"
+                      gap={8}
+                      style={{ alignItems: "center" }}
+                    >
+                      <span className="text-sm">Confidence:</span>
+                      <span className="text-sm">
+                        {Math.round(results.sentiment.confidence * 100)}%
+                      </span>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
+          </Grid>
         </TabsContent>
 
-        <TabsContent value="objects" className="space-y-4">
+        <TabsContent value="objects">
           {results.objects && results.objects.length > 0 ? (
             <ScrollArea className="h-64">
-              <div className="space-y-2">
+              <Grid columns={1} gap={8}>
                 {results.objects.map((obj, index) => (
                   <Card key={index}>
                     <CardContent className="p-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <div
-                            className="w-3 h-3 rounded-sm"
-                            style={{ backgroundColor: obj.color || "#3b82f6" }}
-                          />
-                          <span className="text-sm font-medium">
-                            {obj.label}
-                          </span>
+                      <Grid columns={1} gap={4}>
+                        <Grid
+                          columns="minmax(0, 1fr) auto"
+                          gap={8}
+                          style={{ alignItems: "center" }}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-3 h-3 rounded-sm shrink-0"
+                              style={{
+                                backgroundColor: obj.color || "#3b82f6",
+                              }}
+                            />
+                            <span className="text-sm font-medium">
+                              {obj.label}
+                            </span>
+                          </div>
+                          <Badge variant="outline">
+                            {Math.round(obj.confidence * 100)}%
+                          </Badge>
+                        </Grid>
+                        <div className="text-xs text-muted-foreground">
+                          Position: ({obj.x}, {obj.y}) Size: {obj.width}×
+                          {obj.height}
                         </div>
-                        <Badge variant="outline">
-                          {Math.round(obj.confidence * 100)}%
-                        </Badge>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Position: ({obj.x}, {obj.y}) Size: {obj.width}×
-                        {obj.height}
-                      </div>
+                      </Grid>
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+              </Grid>
             </ScrollArea>
           ) : (
-            <div className="text-center py-8">
-              <Target className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+            <Grid
+              columns={1}
+              gap={8}
+              className="py-8 text-center"
+              style={{ justifyItems: "center" }}
+            >
+              <Target className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
                 No objects detected
               </p>
-            </div>
+            </Grid>
           )}
         </TabsContent>
 
-        <TabsContent value="text" className="space-y-4">
+        <TabsContent value="text">
           {results.text && results.text.length > 0 ? (
             <ScrollArea className="h-64">
-              <div className="space-y-2">
+              <Grid columns={1} gap={8}>
                 {results.text.map((textItem, index) => (
                   <Card key={index}>
                     <CardContent className="p-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
+                      <Grid
+                        columns="minmax(0, 1fr) auto"
+                        gap={8}
+                        style={{ alignItems: "start" }}
+                      >
+                        <Grid columns={1} gap={4}>
                           <p className="text-sm font-medium">{textItem.text}</p>
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className="text-xs text-muted-foreground">
                             Confidence: {Math.round(textItem.confidence * 100)}%
                           </div>
-                        </div>
+                        </Grid>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -508,138 +546,159 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                         >
                           <Copy className="h-3 w-3" />
                         </Button>
-                      </div>
+                      </Grid>
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+              </Grid>
             </ScrollArea>
           ) : (
-            <div className="text-center py-8">
-              <Type className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+            <Grid
+              columns={1}
+              gap={8}
+              className="py-8 text-center"
+              style={{ justifyItems: "center" }}
+            >
+              <Type className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">No text detected</p>
-            </div>
+            </Grid>
           )}
         </TabsContent>
 
-        <TabsContent value="details" className="space-y-4">
-          {/* Color Palette */}
-          {results.colors && results.colors.length > 0 && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center">
-                  <Palette className="h-4 w-4 mr-2" />
-                  Color Palette
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {results.colors.map((color, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div
-                        className="w-6 h-6 rounded border"
-                        style={{ backgroundColor: color.color }}
-                      />
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">{color.color}</div>
-                        {color.name && (
-                          <div className="text-xs text-muted-foreground">
-                            {color.name}
+        <TabsContent value="details">
+          <Grid columns={1} gap={16}>
+            {/* Color Palette */}
+            {results.colors && results.colors.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center">
+                    <Palette className="h-4 w-4 mr-2" />
+                    Color Palette
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Grid columns={1} gap={8}>
+                    {results.colors.map((color, index) => (
+                      <Grid
+                        key={index}
+                        columns="auto minmax(0, 1fr) auto"
+                        gap={12}
+                        style={{ alignItems: "center" }}
+                      >
+                        <div
+                          className="w-6 h-6 rounded border"
+                          style={{ backgroundColor: color.color }}
+                        />
+                        <div>
+                          <div className="text-sm font-medium">
+                            {color.color}
+                          </div>
+                          {color.name && (
+                            <div className="text-xs text-muted-foreground">
+                              {color.name}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-sm">
+                          {color.percentage.toFixed(1)}%
+                        </div>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Face Detection */}
+            {results.faces && results.faces.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center">
+                    <Smile className="h-4 w-4 mr-2" />
+                    Face Detection
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Grid columns={1} gap={12}>
+                    {results.faces.map((face, index) => (
+                      <Grid key={index} columns={1} gap={8}>
+                        <Grid
+                          columns="minmax(0, 1fr) auto"
+                          gap={8}
+                          style={{ alignItems: "center" }}
+                        >
+                          <span className="text-sm font-medium">
+                            Face {index + 1}
+                          </span>
+                          <Badge variant="outline">
+                            {Math.round(face.confidence * 100)}%
+                          </Badge>
+                        </Grid>
+                        {face.age && (
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">Age:</span>{" "}
+                            ~{face.age}
                           </div>
                         )}
-                      </div>
-                      <div className="text-sm">
-                        {color.percentage.toFixed(1)}%
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                        {face.gender && (
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">
+                              Gender:
+                            </span>{" "}
+                            {face.gender}
+                          </div>
+                        )}
+                        {face.emotion && (
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">
+                              Emotion:
+                            </span>{" "}
+                            {face.emotion}
+                          </div>
+                        )}
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
 
-          {/* Face Detection */}
-          {results.faces && results.faces.length > 0 && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center">
-                  <Smile className="h-4 w-4 mr-2" />
-                  Face Detection
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {results.faces.map((face, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">
-                          Face {index + 1}
-                        </span>
-                        <Badge variant="outline">
-                          {Math.round(face.confidence * 100)}%
-                        </Badge>
-                      </div>
-                      {face.age && (
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">Age:</span> ~
-                          {face.age}
-                        </div>
-                      )}
-                      {face.gender && (
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">Gender:</span>{" "}
-                          {face.gender}
-                        </div>
-                      )}
-                      {face.emotion && (
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">
-                            Emotion:
-                          </span>{" "}
-                          {face.emotion}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Metadata */}
-          {results.metadata && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center">
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Image Metadata
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
+            {/* Metadata */}
+            {results.metadata && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center">
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Image Metadata
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* Label and value in two tracks, so every value in the table
+                    lines up on the same edge instead of each row justifying
+                    itself. */}
+                  <Grid
+                    columns="minmax(0, 1fr) auto"
+                    gap={8}
+                    className="text-sm"
+                  >
                     <span className="text-muted-foreground">Dimensions:</span>
                     <span>
                       {results.metadata.width} × {results.metadata.height}
                     </span>
-                  </div>
-                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Format:</span>
                     <span>{results.metadata.format.toUpperCase()}</span>
-                  </div>
-                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Size:</span>
                     <span>
                       {(results.metadata.size / 1024 / 1024).toFixed(2)} MB
                     </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
+          </Grid>
         </TabsContent>
       </Tabs>
-    </div>
+    </Grid>
   )
 }
 
@@ -956,9 +1015,12 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
     }
 
     return (
-      <div
+      <Grid
         ref={ref}
-        className={cn("flex flex-col h-full", className)}
+        columns={1}
+        rows="auto minmax(0, 1fr)"
+        gap={0}
+        className={cn("h-full", className)}
         {...props}
       >
         {/* Header */}
@@ -970,7 +1032,7 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                 Analyze images with AI-powered computer vision
               </p>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <Label htmlFor="bounding-boxes" className="text-sm">
                 Show Overlays
               </Label>
@@ -983,9 +1045,13 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        <Grid
+          columns="minmax(0, 1fr) 24rem"
+          gap={0}
+          className="overflow-hidden"
+        >
           {/* Main Content */}
-          <div className="flex-1 flex flex-col">
+          <Grid columns={1} rows="auto minmax(0, 1fr)" gap={0}>
             {/* Input Methods */}
             <div className="border-b p-4">
               <Tabs defaultValue="upload" className="w-full">
@@ -1035,7 +1101,7 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
 
                 {enableUrl && (
                   <TabsContent value="url" className="mt-4">
-                    <div className="flex space-x-2">
+                    <Grid columns="minmax(0, 1fr) auto" gap={8}>
                       <Input
                         placeholder="Enter image URL..."
                         value={urlInput}
@@ -1050,38 +1116,36 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                       >
                         <Link className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </Grid>
                   </TabsContent>
                 )}
 
                 {enableCamera && (
                   <TabsContent value="camera" className="mt-4">
-                    <div className="space-y-4">
-                      {!isCameraActive ? (
-                        <Button onClick={startCamera} className="w-full">
-                          <Camera className="h-4 w-4 mr-2" />
-                          Start Camera
+                    {!isCameraActive ? (
+                      <Button onClick={startCamera} className="w-full">
+                        <Camera className="h-4 w-4 mr-2" />
+                        Start Camera
+                      </Button>
+                    ) : (
+                      <Grid columns={1} gap={8}>
+                        <video
+                          ref={videoRef}
+                          autoPlay
+                          playsInline
+                          className="w-full rounded-lg border"
+                        />
+                        <Button onClick={capturePhoto} className="w-full">
+                          Capture Photo
                         </Button>
-                      ) : (
-                        <div className="space-y-2">
-                          <video
-                            ref={videoRef}
-                            autoPlay
-                            playsInline
-                            className="w-full rounded-lg border"
-                          />
-                          <Button onClick={capturePhoto} className="w-full">
-                            Capture Photo
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                      </Grid>
+                    )}
                   </TabsContent>
                 )}
 
                 {enableGeneration && (
                   <TabsContent value="generate" className="mt-4">
-                    <div className="space-y-3">
+                    <Grid columns={1} gap={12}>
                       <Textarea
                         placeholder="Describe the image you want to generate..."
                         value={generationPrompt}
@@ -1102,14 +1166,14 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                           "Generate Image"
                         )}
                       </Button>
-                    </div>
+                    </Grid>
                   </TabsContent>
                 )}
               </Tabs>
             </div>
 
             {/* Image Display */}
-            <div className="flex-1 p-4">
+            <div className="p-4 overflow-hidden">
               {currentImage ? (
                 <div className="relative h-full border rounded-lg overflow-hidden">
                   <img
@@ -1138,9 +1202,14 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                   )}
                 </div>
               ) : (
-                <div className="h-full border-2 border-dashed rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <Eye className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <Grid
+                  columns={1}
+                  gap={16}
+                  className="h-full border-2 border-dashed rounded-lg text-center"
+                  style={{ placeContent: "center", justifyItems: "center" }}
+                >
+                  <Eye className="h-12 w-12 text-muted-foreground" />
+                  <div>
                     <p className="text-lg font-medium mb-2">
                       No image selected
                     </p>
@@ -1148,17 +1217,22 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                       Upload an image to start analysis
                     </p>
                   </div>
-                </div>
+                </Grid>
               )}
             </div>
-          </div>
+          </Grid>
 
           {/* Results Sidebar */}
-          <div className="w-96 border-l flex flex-col">
+          <Grid
+            columns={1}
+            rows="auto minmax(0, 1fr)"
+            gap={0}
+            className="border-l overflow-hidden"
+          >
             <div className="p-4 border-b">
-              <div className="space-y-4">
+              <Grid columns={1} gap={16}>
                 {/* Confidence Threshold */}
-                <div className="space-y-2">
+                <Grid columns={1} gap={8}>
                   <Label className="text-sm">
                     Confidence Threshold:{" "}
                     {Math.round(confidenceThreshold * 100)}%
@@ -1171,10 +1245,10 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                     step={0.05}
                     className="w-full"
                   />
-                </div>
+                </Grid>
 
                 {/* Detection Types */}
-                <div className="space-y-2">
+                <Grid columns={1} gap={8}>
                   <Label className="text-sm">Show Detection Types</Label>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -1201,11 +1275,11 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                       </Button>
                     ))}
                   </div>
-                </div>
-              </div>
+                </Grid>
+              </Grid>
             </div>
 
-            <div className="flex-1 overflow-hidden">
+            <div className="overflow-hidden">
               <ScrollArea className="h-full p-4">
                 <ResultsPanel
                   results={results}
@@ -1214,9 +1288,9 @@ const AIVision = React.forwardRef<HTMLDivElement, AIVisionProps>(
                 />
               </ScrollArea>
             </div>
-          </div>
-        </div>
-      </div>
+          </Grid>
+        </Grid>
+      </Grid>
     )
   }
 )

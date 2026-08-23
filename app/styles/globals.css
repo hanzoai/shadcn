@@ -369,3 +369,13 @@
 .dark [data-badge] {
   @apply bg-background text-foreground border-border;
 }
+
+/* A grid item starts at `min-width: auto`, which floors its track at the
+   item's min-content width — one long unbroken token then widens its own
+   column and squeezes every sibling, and the track sizes @hanzo/ui/grid
+   declares are decoration. The package states this once as
+   `[data-slot='grid'] > *` in @hanzo/ui/styles/motion.css; this site does not
+   load that sheet, so it states the same invariant here. */
+[data-slot="grid"] > * {
+  min-width: 0;
+}

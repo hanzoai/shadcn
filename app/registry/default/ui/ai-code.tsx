@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Grid } from "@hanzo/ui/grid"
 import Editor, { OnChange, OnMount } from "@monaco-editor/react"
 import { cva, type VariantProps } from "class-variance-authority"
 import {
@@ -81,13 +82,7 @@ import {
 
 // Types
 export type CodeFeature =
-  | "generate"
-  | "explain"
-  | "refactor"
-  | "debug"
-  | "test"
-  | "document"
-  | "review"
+  "generate" | "explain" | "refactor" | "debug" | "test" | "document" | "review"
 
 export interface Explanation {
   id: string
@@ -115,8 +110,10 @@ export interface SecurityIssue {
   fix?: string
 }
 
-export interface AICodeProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface AICodeProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
   value?: string
   defaultValue?: string
   language?: string
@@ -205,7 +202,7 @@ const SecurityPanel = React.forwardRef<
     onFixIssue?: (issue: SecurityIssue) => void
   } & React.HTMLAttributes<HTMLDivElement>
 >(({ issues, onFixIssue, className, ...props }, ref) => (
-  <div ref={ref} className={cn("space-y-2", className)} {...props}>
+  <Grid ref={ref} columns={1} gap={8} className={className} {...props}>
     <div className="flex items-center gap-2">
       <Shield className="h-4 w-4" />
       <span className="font-medium">Security Analysis</span>
@@ -226,7 +223,7 @@ const SecurityPanel = React.forwardRef<
         No security issues detected
       </p>
     ) : (
-      <div className="space-y-2">
+      <Grid columns={1} gap={8}>
         {issues.map((issue) => (
           <div
             key={issue.id}
@@ -242,8 +239,12 @@ const SecurityPanel = React.forwardRef<
                 "border-blue-500 bg-blue-50 dark:bg-blue-950"
             )}
           >
-            <div className="flex items-start justify-between gap-2">
-              <div className="space-y-1">
+            <Grid
+              columns={onFixIssue && issue.fix ? "minmax(0, 1fr) auto" : 1}
+              gap={8}
+              style={{ alignItems: "start" }}
+            >
+              <Grid columns={1} gap={4}>
                 <div className="flex items-center gap-2">
                   <Badge
                     variant={
@@ -265,7 +266,7 @@ const SecurityPanel = React.forwardRef<
                     Fix: {issue.fix}
                   </p>
                 )}
-              </div>
+              </Grid>
               {onFixIssue && issue.fix && (
                 <Button
                   size="sm"
@@ -275,12 +276,12 @@ const SecurityPanel = React.forwardRef<
                   Fix
                 </Button>
               )}
-            </div>
+            </Grid>
           </div>
         ))}
-      </div>
+      </Grid>
     )}
-  </div>
+  </Grid>
 ))
 SecurityPanel.displayName = "SecurityPanel"
 
@@ -292,7 +293,7 @@ const SuggestionsPanel = React.forwardRef<
     onApplySuggestion?: (suggestion: CodeSuggestion) => void
   } & React.HTMLAttributes<HTMLDivElement>
 >(({ suggestions, onApplySuggestion, className, ...props }, ref) => (
-  <div ref={ref} className={cn("space-y-2", className)} {...props}>
+  <Grid ref={ref} columns={1} gap={8} className={className} {...props}>
     <div className="flex items-center gap-2">
       <Zap className="h-4 w-4" />
       <span className="font-medium">AI Suggestions</span>
@@ -300,19 +301,24 @@ const SuggestionsPanel = React.forwardRef<
     {suggestions.length === 0 ? (
       <p className="text-sm text-muted-foreground">No suggestions available</p>
     ) : (
-      <div className="space-y-2">
+      <Grid columns={1} gap={8}>
         {suggestions.map((suggestion) => {
           const Icon = featureIcons[suggestion.type] || Code
           return (
-            <div
+            <Grid
               key={suggestion.id}
-              className={cn(
-                suggestionVariants({ severity: suggestion.severity || "info" }),
-                "space-y-2"
-              )}
+              columns={1}
+              gap={8}
+              className={suggestionVariants({
+                severity: suggestion.severity || "info",
+              })}
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="space-y-1">
+              <Grid
+                columns={onApplySuggestion ? "minmax(0, 1fr) auto" : 1}
+                gap={8}
+                style={{ alignItems: "start" }}
+              >
+                <Grid columns={1} gap={4}>
                   <div className="flex items-center gap-2">
                     <Icon className="h-4 w-4" />
                     <span className="font-medium text-sm">
@@ -327,7 +333,7 @@ const SuggestionsPanel = React.forwardRef<
                       Lines {suggestion.startLine}-{suggestion.endLine}
                     </span>
                   )}
-                </div>
+                </Grid>
                 {onApplySuggestion && (
                   <Button
                     size="sm"
@@ -337,20 +343,20 @@ const SuggestionsPanel = React.forwardRef<
                     Apply
                   </Button>
                 )}
-              </div>
+              </Grid>
               {suggestion.code && (
-                <div className="mt-2 rounded bg-background/50 p-2">
+                <div className="rounded bg-background/50 p-2">
                   <pre className="text-xs overflow-x-auto">
                     <code>{suggestion.code}</code>
                   </pre>
                 </div>
               )}
-            </div>
+            </Grid>
           )
         })}
-      </div>
+      </Grid>
     )}
-  </div>
+  </Grid>
 ))
 SuggestionsPanel.displayName = "SuggestionsPanel"
 
@@ -398,9 +404,12 @@ const ChatPanel = React.forwardRef<
     }
 
     return (
-      <div
+      <Grid
         ref={ref}
-        className={cn("flex h-full flex-col", className)}
+        columns={1}
+        rows="auto minmax(0, 1fr) auto"
+        gap={0}
+        className={cn("h-full", className)}
         {...props}
       >
         <div className="flex items-center gap-2 p-3 border-b">
@@ -408,68 +417,74 @@ const ChatPanel = React.forwardRef<
           <span className="font-medium">AI Assistant</span>
         </div>
 
-        <ScrollArea ref={scrollRef} className="flex-1 p-3">
-          <div className="space-y-3">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex gap-2",
-                  message.role === "user" ? "justify-end" : "justify-start"
-                )}
-              >
-                {message.role === "assistant" && (
-                  <Avatar className="h-6 w-6 shrink-0">
-                    <AvatarFallback>
-                      <Bot className="h-3 w-3" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
-                <div
-                  className={cn(
-                    "max-w-[80%] rounded-lg px-3 py-2 text-sm",
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  )}
+        <ScrollArea ref={scrollRef} className="p-3">
+          <Grid columns={1} gap={12}>
+            {messages.map((message) => {
+              const mine = message.role === "user"
+              return (
+                <Grid
+                  key={message.id}
+                  columns={mine ? "minmax(0, 1fr) auto" : "auto minmax(0, 1fr)"}
+                  gap={8}
+                  style={{ alignItems: "start" }}
                 >
-                  {message.type === "code" ? (
-                    <pre className="overflow-x-auto">
-                      <code>{message.content}</code>
-                    </pre>
-                  ) : (
-                    <p>{message.content}</p>
+                  {!mine && (
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback>
+                        <Bot className="h-3 w-3" />
+                      </AvatarFallback>
+                    </Avatar>
                   )}
-                </div>
-                {message.role === "user" && (
-                  <Avatar className="h-6 w-6 shrink-0">
-                    <AvatarFallback>
-                      <User className="h-3 w-3" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
-              </div>
-            ))}
+                  <div
+                    className={cn(
+                      "w-fit max-w-[80%] rounded-lg px-3 py-2 text-sm",
+                      mine
+                        ? "bg-primary text-primary-foreground ml-auto"
+                        : "bg-muted"
+                    )}
+                  >
+                    {message.type === "code" ? (
+                      <pre className="overflow-x-auto">
+                        <code>{message.content}</code>
+                      </pre>
+                    ) : (
+                      <p>{message.content}</p>
+                    )}
+                  </div>
+                  {mine && (
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback>
+                        <User className="h-3 w-3" />
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                </Grid>
+              )
+            })}
             {isGenerating && (
-              <div className="flex gap-2 justify-start">
-                <Avatar className="h-6 w-6 shrink-0">
+              <Grid
+                columns="auto minmax(0, 1fr)"
+                gap={8}
+                style={{ alignItems: "start" }}
+              >
+                <Avatar className="h-6 w-6">
                   <AvatarFallback>
                     <Bot className="h-3 w-3" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="bg-muted rounded-lg px-3 py-2 text-sm">
+                <div className="bg-muted w-fit rounded-lg px-3 py-2 text-sm">
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-3 w-3 animate-spin" />
                     <span>AI is thinking...</span>
                   </div>
                 </div>
-              </div>
+              </Grid>
             )}
-          </div>
+          </Grid>
         </ScrollArea>
 
         <div className="border-t p-3">
-          <div className="flex gap-2">
+          <Grid columns="minmax(0, 1fr) auto" gap={8}>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -486,9 +501,9 @@ const ChatPanel = React.forwardRef<
             >
               <Send className="h-4 w-4" />
             </Button>
-          </div>
+          </Grid>
         </div>
-      </div>
+      </Grid>
     )
   }
 )
@@ -538,15 +553,15 @@ const FileTabs = React.forwardRef<
     }
 
     return (
-      <div
+      <Grid
         ref={ref}
-        className={cn(
-          "flex items-center gap-1 border-b bg-muted/30 px-2",
-          className
-        )}
+        columns={onFileCreate ? "minmax(0, 1fr) auto" : 1}
+        gap={4}
+        className={cn("border-b bg-muted/30 px-2", className)}
+        style={{ alignItems: "center" }}
         {...props}
       >
-        <ScrollArea className="flex-1">
+        <ScrollArea>
           <div className="flex items-center gap-1 py-1">
             {files.map((file) => (
               <Button
@@ -613,7 +628,7 @@ const FileTabs = React.forwardRef<
             )}
           </div>
         )}
-      </div>
+      </Grid>
     )
   }
 )
@@ -768,7 +783,12 @@ const AICode = React.forwardRef<HTMLDivElement, AICodeProps>(
 
         // Setup code actions for suggestions
         monaco.languages.registerCodeActionProvider(currentLanguage, {
-          provideCodeActions: (model: any, range: any, context: any, token: any) => {
+          provideCodeActions: (
+            model: any,
+            range: any,
+            context: any,
+            token: any
+          ) => {
             const actions = suggestions
               .filter(
                 (s) =>
@@ -1032,10 +1052,17 @@ const AICode = React.forwardRef<HTMLDivElement, AICodeProps>(
 
     return (
       <TooltipProvider>
-        <div
+        <Grid
           ref={ref}
+          columns={1}
+          rows={
+            multiFileSupport
+              ? "auto auto minmax(0, 1fr)"
+              : "auto minmax(0, 1fr)"
+          }
+          gap={0}
           className={cn(
-            "flex h-full w-full flex-col overflow-hidden rounded-lg border bg-background",
+            "h-full w-full overflow-hidden rounded-lg border bg-background",
             className
           )}
           {...props}
@@ -1174,7 +1201,7 @@ const AICode = React.forwardRef<HTMLDivElement, AICodeProps>(
           )}
 
           {/* Main content area */}
-          <ResizablePanelGroup direction="horizontal" className="flex-1">
+          <ResizablePanelGroup direction="horizontal">
             {/* Code editor panel */}
             <ResizablePanel defaultSize={showSidePanel ? 70 : 100} minSize={30}>
               <div className="h-full">
@@ -1325,7 +1352,7 @@ const AICode = React.forwardRef<HTMLDivElement, AICodeProps>(
               </>
             )}
           </ResizablePanelGroup>
-        </div>
+        </Grid>
       </TooltipProvider>
     )
   }

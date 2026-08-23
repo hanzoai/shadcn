@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Cell, Grid } from "@hanzo/ui/grid"
 import { Bot, MessageSquare, Settings, Sparkles, User } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -21,8 +22,10 @@ import { ScrollArea } from "@/registry/default/ui/scroll-area"
 import { Separator } from "@/registry/default/ui/separator"
 import { Textarea } from "@/registry/default/ui/textarea"
 
-export interface AIAssistantProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError"> {
+export interface AIAssistantProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onError"
+> {
   provider?: string
   model?: string
   apiKey?: string
@@ -89,14 +92,21 @@ const AIAssistant = React.forwardRef<HTMLDivElement, AIAssistantProps>(
     }
 
     return (
-      <div
+      // Header, transcript, composer: three rows, the middle one taking the
+      // slack. The transcript scrolls because the 1fr track bounds it, which a
+      // column of flex children only does once every one of them agrees to
+      // shrink.
+      <Grid
         ref={ref}
-        className={cn("flex h-full w-full flex-col", className)}
+        columns={1}
+        rows="auto minmax(0, 1fr) auto"
+        gap={0}
+        className={className}
+        style={{ height: "100%", width: "100%" }}
         {...props}
       >
-        {/* Header */}
         <div className="flex items-center justify-between border-b p-4">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
               <Sparkles className="h-5 w-5 text-primary" />
             </div>
@@ -107,7 +117,7 @@ const AIAssistant = React.forwardRef<HTMLDivElement, AIAssistantProps>(
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             {tools.length > 0 && (
               <Badge variant="secondary">{tools.length} tools</Badge>
             )}
@@ -117,76 +127,94 @@ const AIAssistant = React.forwardRef<HTMLDivElement, AIAssistantProps>(
           </div>
         </div>
 
-        {/* Messages */}
-        <ScrollArea ref={scrollRef} className="flex-1 p-4">
-          <div className="space-y-4">
+        <ScrollArea ref={scrollRef} className="p-4">
+          <Grid columns={1} gap={16}>
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <MessageSquare className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                <h4 className="text-lg font-medium text-muted-foreground">
-                  Start a conversation
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  Ask me anything and I'll do my best to help!
-                </p>
-              </div>
-            ) : (
-              messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex gap-3",
-                    message.role === "user" ? "flex-row-reverse" : "flex-row"
-                  )}
-                >
-                  {showAvatar && (
-                    <Avatar className="h-8 w-8 shrink-0">
-                      <AvatarFallback>
-                        {message.role === "user" ? (
-                          <User className="h-4 w-4" />
-                        ) : (
-                          <Bot className="h-4 w-4" />
-                        )}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  <div
-                    className={cn(
-                      "flex max-w-[80%] flex-col space-y-1",
-                      message.role === "user" ? "items-end" : "items-start"
-                    )}
-                  >
-                    {showTimestamp && (
-                      <span className="text-xs text-muted-foreground">
-                        {message.timestamp.toLocaleTimeString()}
-                      </span>
-                    )}
-                    <div
-                      className={cn(
-                        "rounded-lg px-3 py-2 text-sm",
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted"
-                      )}
-                    >
-                      <div className="whitespace-pre-wrap">
-                        {message.content}
-                      </div>
-                    </div>
-                  </div>
+              <Grid
+                columns={1}
+                gap={16}
+                className="py-8 text-center"
+                style={{ justifyItems: "center" }}
+              >
+                <MessageSquare className="h-12 w-12 text-muted-foreground/50" />
+                <div>
+                  <h4 className="text-lg font-medium text-muted-foreground">
+                    Start a conversation
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Ask me anything and I&apos;ll do my best to help!
+                  </p>
                 </div>
-              ))
+              </Grid>
+            ) : (
+              messages.map((message) => {
+                const mine = message.role === "user"
+                // The avatar track is content-sized and the bubble track takes
+                // the rest; which side each sits on is a placement, so the two
+                // sides read the same way instead of one being a reversal of
+                // the other.
+                return (
+                  <Grid
+                    key={message.id}
+                    columns={
+                      mine ? "minmax(0, 1fr) auto" : "auto minmax(0, 1fr)"
+                    }
+                    gap={12}
+                  >
+                    {showAvatar && (
+                      <Cell col={mine ? 2 : 1}>
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback>
+                            {mine ? (
+                              <User className="h-4 w-4" />
+                            ) : (
+                              <Bot className="h-4 w-4" />
+                            )}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Cell>
+                    )}
+                    <Cell col={mine ? 1 : 2}>
+                      <Grid
+                        columns={1}
+                        gap={4}
+                        className="max-w-[80%]"
+                        style={{
+                          justifyItems: mine ? "end" : "start",
+                          marginLeft: mine ? "auto" : undefined,
+                        }}
+                      >
+                        {showTimestamp && (
+                          <span className="text-xs text-muted-foreground">
+                            {message.timestamp.toLocaleTimeString()}
+                          </span>
+                        )}
+                        <div
+                          className={cn(
+                            "rounded-lg px-3 py-2 text-sm whitespace-pre-wrap",
+                            mine
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted"
+                          )}
+                        >
+                          {message.content}
+                        </div>
+                      </Grid>
+                    </Cell>
+                  </Grid>
+                )
+              })
             )}
             {isLoading && (
-              <div className="flex gap-3">
-                <Avatar className="h-8 w-8 shrink-0">
+              <Grid columns="auto minmax(0, 1fr)" gap={12}>
+                <Avatar className="h-8 w-8">
                   <AvatarFallback>
                     <Bot className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="bg-muted rounded-lg px-3 py-2 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex space-x-1">
+                <div className="bg-muted w-fit rounded-lg px-3 py-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
                       <div className="h-2 w-2 animate-bounce rounded-full bg-current [animation-delay:-0.3s]" />
                       <div className="h-2 w-2 animate-bounce rounded-full bg-current [animation-delay:-0.15s]" />
                       <div className="h-2 w-2 animate-bounce rounded-full bg-current" />
@@ -194,14 +222,13 @@ const AIAssistant = React.forwardRef<HTMLDivElement, AIAssistantProps>(
                     <span>AI is thinking...</span>
                   </div>
                 </div>
-              </div>
+              </Grid>
             )}
-          </div>
+          </Grid>
         </ScrollArea>
 
-        {/* Input */}
         <div className="border-t p-4">
-          <div className="flex space-x-2">
+          <Grid columns="minmax(0, 1fr) auto" gap={8}>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -215,15 +242,14 @@ const AIAssistant = React.forwardRef<HTMLDivElement, AIAssistantProps>(
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
               size="icon"
-              className="shrink-0"
             >
               <MessageSquare className="h-4 w-4" />
             </Button>
-          </div>
+          </Grid>
         </div>
 
         {children}
-      </div>
+      </Grid>
     )
   }
 )

@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { Grid } from "@hanzo/ui/grid"
 import {
   Activity,
   AlertCircle,
@@ -65,11 +66,7 @@ import { Textarea } from "@/registry/default/ui/textarea"
 
 // Types and Interfaces
 export type AgentType =
-  | "research"
-  | "code"
-  | "analysis"
-  | "creative"
-  | "automation"
+  "research" | "code" | "analysis" | "creative" | "automation"
 export type AgentStatus = "idle" | "working" | "completed" | "error"
 export type WorkflowMode = "sequential" | "parallel" | "custom"
 
@@ -391,36 +388,50 @@ const AgentCard: React.FC<{
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2">
-        <div className="flex items-center gap-2">
-          <StatusIcon className={cn("h-3 w-3", getStatusColor(agent.status))} />
-          <span className="text-xs font-medium capitalize">{agent.status}</span>
-        </div>
-
-        {agent.currentTask && (
-          <div className="bg-muted p-2 rounded text-xs">
-            <div className="font-medium">{agent.currentTask.title}</div>
-            <Progress value={agent.currentTask.progress} className="mt-1 h-1" />
+      <CardContent>
+        <Grid columns={1} gap={8}>
+          <div className="flex items-center gap-2">
+            <StatusIcon
+              className={cn("h-3 w-3", getStatusColor(agent.status))}
+            />
+            <span className="text-xs font-medium capitalize">
+              {agent.status}
+            </span>
           </div>
-        )}
 
-        <div className="flex flex-wrap gap-1">
-          {agent.capabilities.slice(0, 3).map((capability) => (
-            <Badge key={capability} variant="secondary" className="text-xs">
-              {capability}
-            </Badge>
-          ))}
-          {agent.capabilities.length > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{agent.capabilities.length - 3}
-            </Badge>
+          {agent.currentTask && (
+            <div className="bg-muted p-2 rounded text-xs">
+              <div className="font-medium">{agent.currentTask.title}</div>
+              <Progress
+                value={agent.currentTask.progress}
+                className="mt-1 h-1"
+              />
+            </div>
           )}
-        </div>
 
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Tasks: {agent.performance.tasksCompleted}</span>
-          <span>Success: {agent.performance.successRate}%</span>
-        </div>
+          <div className="flex flex-wrap gap-1">
+            {agent.capabilities.slice(0, 3).map((capability) => (
+              <Badge key={capability} variant="secondary" className="text-xs">
+                {capability}
+              </Badge>
+            ))}
+            {agent.capabilities.length > 3 && (
+              <Badge variant="outline" className="text-xs">
+                +{agent.capabilities.length - 3}
+              </Badge>
+            )}
+          </div>
+
+          <Grid
+            columns="auto auto"
+            gap={8}
+            className="text-xs text-muted-foreground"
+            style={{ justifyContent: "space-between" }}
+          >
+            <span>Tasks: {agent.performance.tasksCompleted}</span>
+            <span>Success: {agent.performance.successRate}%</span>
+          </Grid>
+        </Grid>
       </CardContent>
     </Card>
   )
@@ -477,8 +488,8 @@ const CreateAgentDialog: React.FC<{
             Configure a new AI agent for your workflow
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
+        <Grid columns={1} gap={16}>
+          <Grid columns={1} gap={8}>
             <Label htmlFor="name">Agent Name</Label>
             <Input
               id="name"
@@ -488,9 +499,9 @@ const CreateAgentDialog: React.FC<{
               }
               placeholder="Enter agent name"
             />
-          </div>
+          </Grid>
 
-          <div>
+          <Grid columns={1} gap={8}>
             <Label htmlFor="type">Agent Type</Label>
             <Select
               value={formData.type}
@@ -515,9 +526,9 @@ const CreateAgentDialog: React.FC<{
                 })}
               </SelectContent>
             </Select>
-          </div>
+          </Grid>
 
-          <div>
+          <Grid columns={1} gap={8}>
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
@@ -530,7 +541,7 @@ const CreateAgentDialog: React.FC<{
               }
               placeholder="Describe the agent's purpose and role"
             />
-          </div>
+          </Grid>
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setOpen(false)}>
@@ -540,7 +551,7 @@ const CreateAgentDialog: React.FC<{
               Create Agent
             </Button>
           </div>
-        </div>
+        </Grid>
       </DialogContent>
     </Dialog>
   )
@@ -601,8 +612,8 @@ const TaskAssignmentDialog: React.FC<{
             Create and assign a task to an agent
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
+        <Grid columns={1} gap={16}>
+          <Grid columns={1} gap={8}>
             <Label htmlFor="title">Task Title</Label>
             <Input
               id="title"
@@ -612,9 +623,9 @@ const TaskAssignmentDialog: React.FC<{
               }
               placeholder="Enter task title"
             />
-          </div>
+          </Grid>
 
-          <div>
+          <Grid columns={1} gap={8}>
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
@@ -627,10 +638,10 @@ const TaskAssignmentDialog: React.FC<{
               }
               placeholder="Describe the task requirements"
             />
-          </div>
+          </Grid>
 
-          <div className="flex gap-4">
-            <div className="flex-1">
+          <Grid columns={{ min: 180, max: 2 }} gap={16}>
+            <Grid columns={1} gap={8}>
               <Label htmlFor="priority">Priority</Label>
               <Select
                 value={taskData.priority}
@@ -647,9 +658,9 @@ const TaskAssignmentDialog: React.FC<{
                   <SelectItem value="high">High</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </Grid>
 
-            <div className="flex-1">
+            <Grid columns={1} gap={8}>
               <Label htmlFor="estimatedTime">Estimated Time (hours)</Label>
               <Input
                 id="estimatedTime"
@@ -663,10 +674,10 @@ const TaskAssignmentDialog: React.FC<{
                 }
                 placeholder="0"
               />
-            </div>
-          </div>
+            </Grid>
+          </Grid>
 
-          <div>
+          <Grid columns={1} gap={8}>
             <Label htmlFor="assignedTo">Assign to Agent</Label>
             <Select
               value={taskData.assignedTo}
@@ -695,7 +706,7 @@ const TaskAssignmentDialog: React.FC<{
                   ))}
               </SelectContent>
             </Select>
-          </div>
+          </Grid>
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setOpen(false)}>
@@ -708,7 +719,7 @@ const TaskAssignmentDialog: React.FC<{
               Assign Task
             </Button>
           </div>
-        </div>
+        </Grid>
       </DialogContent>
     </Dialog>
   )
@@ -965,21 +976,26 @@ export const AIAgents: React.FC<AIAgentsProps> = ({
             ))}
 
             {agents.length === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                <div className="text-center">
-                  <Bot className="h-12 w-12 mx-auto mb-4" />
+              <Grid
+                columns={1}
+                gap={8}
+                className="absolute inset-0 text-muted-foreground text-center"
+                style={{ placeContent: "center", justifyItems: "center" }}
+              >
+                <Bot className="h-12 w-12" />
+                <div>
                   <h3 className="text-lg font-medium">No Agents Created</h3>
                   <p className="text-sm">
                     Create your first AI agent to get started
                   </p>
                 </div>
-              </div>
+              </Grid>
             )}
           </div>
         </TabsContent>
 
         <TabsContent value="agents" className="flex-1 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Grid columns={{ min: 280, max: 3 }} gap={16}>
             {agents.map((agent) => {
               const config = agentTypeConfig[agent.type]
               const Icon = config.icon
@@ -1004,87 +1020,95 @@ export const AIAgents: React.FC<AIAgentsProps> = ({
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Status</span>
-                      <Badge
-                        variant={
-                          agent.status === "working" ? "default" : "secondary"
-                        }
-                        className="capitalize"
+                  <CardContent>
+                    <Grid columns={1} gap={16}>
+                      <Grid
+                        columns="minmax(0, 1fr) auto"
+                        gap={8}
+                        style={{ alignItems: "center" }}
                       >
-                        {agent.status}
-                      </Badge>
-                    </div>
+                        <span className="text-sm font-medium">Status</span>
+                        <Badge
+                          variant={
+                            agent.status === "working" ? "default" : "secondary"
+                          }
+                          className="capitalize"
+                        >
+                          {agent.status}
+                        </Badge>
+                      </Grid>
 
-                    {agent.currentTask && (
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Current Task</div>
-                        <div className="bg-muted p-3 rounded-lg">
-                          <div className="font-medium text-sm">
-                            {agent.currentTask.title}
+                      {agent.currentTask && (
+                        <Grid columns={1} gap={8}>
+                          <div className="text-sm font-medium">
+                            Current Task
                           </div>
-                          <Progress
-                            value={agent.currentTask.progress}
-                            className="mt-2"
-                          />
-                          <div className="text-xs text-muted-foreground mt-1">
-                            {agent.currentTask.progress}% Complete
+                          <div className="bg-muted p-3 rounded-lg">
+                            <div className="font-medium text-sm">
+                              {agent.currentTask.title}
+                            </div>
+                            <Progress
+                              value={agent.currentTask.progress}
+                              className="mt-2"
+                            />
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {agent.currentTask.progress}% Complete
+                            </div>
+                          </div>
+                        </Grid>
+                      )}
+
+                      <Grid columns={1} gap={8}>
+                        <div className="text-sm font-medium">Capabilities</div>
+                        <div className="flex flex-wrap gap-1">
+                          {agent.capabilities.map((capability) => (
+                            <Badge
+                              key={capability}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {capability}
+                            </Badge>
+                          ))}
+                        </div>
+                      </Grid>
+
+                      <Grid columns={3} gap={8} className="text-center">
+                        <div>
+                          <div className="text-lg font-bold">
+                            {agent.performance.tasksCompleted}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Tasks
                           </div>
                         </div>
-                      </div>
-                    )}
-
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium">Capabilities</div>
-                      <div className="flex flex-wrap gap-1">
-                        {agent.capabilities.map((capability) => (
-                          <Badge
-                            key={capability}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {capability}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div>
-                        <div className="text-lg font-bold">
-                          {agent.performance.tasksCompleted}
+                        <div>
+                          <div className="text-lg font-bold">
+                            {agent.performance.successRate}%
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Success
+                          </div>
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          Tasks
+                        <div>
+                          <div className="text-lg font-bold">
+                            {agent.performance.avgCompletionTime}m
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Avg Time
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <div className="text-lg font-bold">
-                          {agent.performance.successRate}%
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Success
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-lg font-bold">
-                          {agent.performance.avgCompletionTime}m
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Avg Time
-                        </div>
-                      </div>
-                    </div>
+                      </Grid>
+                    </Grid>
                   </CardContent>
                 </Card>
               )
             })}
-          </div>
+          </Grid>
         </TabsContent>
 
         <TabsContent value="monitoring" className="flex-1 p-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Grid columns={{ min: 380, max: 2 }} gap={24}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1092,36 +1116,44 @@ export const AIAgents: React.FC<AIAgentsProps> = ({
                   System Overview
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold">{agents.length}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Total Agents
+              <CardContent>
+                <Grid columns={1} gap={16}>
+                  <Grid columns={{ min: 130, max: 2 }} gap={16}>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold">{agents.length}</div>
+                      <div className="text-sm text-muted-foreground">
+                        Total Agents
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold">
-                      {agents.filter((a) => a.status === "working").length}
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold">
+                        {agents.filter((a) => a.status === "working").length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Active
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground">Active</div>
-                  </div>
-                </div>
+                  </Grid>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Workflow Status</span>
-                    <Badge
-                      variant={isWorkflowRunning ? "default" : "secondary"}
+                  <Grid columns={1} gap={8} className="text-sm">
+                    <Grid
+                      columns="minmax(0, 1fr) auto"
+                      gap={8}
+                      style={{ alignItems: "center" }}
                     >
-                      {isWorkflowRunning ? "Running" : "Stopped"}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Connected Agents</span>
-                    <span>{connections.length} connections</span>
-                  </div>
-                </div>
+                      <span>Workflow Status</span>
+                      <Badge
+                        variant={isWorkflowRunning ? "default" : "secondary"}
+                      >
+                        {isWorkflowRunning ? "Running" : "Stopped"}
+                      </Badge>
+                    </Grid>
+                    <Grid columns="minmax(0, 1fr) auto" gap={8}>
+                      <span>Connected Agents</span>
+                      <span>{connections.length} connections</span>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </CardContent>
             </Card>
 
@@ -1134,11 +1166,14 @@ export const AIAgents: React.FC<AIAgentsProps> = ({
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-64">
-                  <div className="space-y-3">
+                  <Grid columns={1} gap={12}>
                     {agents.map((agent) => (
-                      <div
+                      <Grid
                         key={agent.id}
-                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                        columns="minmax(0, 1fr) auto"
+                        gap={12}
+                        className="p-3 bg-muted rounded-lg"
+                        style={{ alignItems: "center" }}
                       >
                         <div className="flex items-center gap-3">
                           <div
@@ -1164,13 +1199,13 @@ export const AIAgents: React.FC<AIAgentsProps> = ({
                             success rate
                           </div>
                         </div>
-                      </div>
+                      </Grid>
                     ))}
-                  </div>
+                  </Grid>
                 </ScrollArea>
               </CardContent>
             </Card>
-          </div>
+          </Grid>
         </TabsContent>
       </Tabs>
     </div>

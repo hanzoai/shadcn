@@ -2,6 +2,7 @@
 
 // WebSpeech API type declarations
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { Grid } from "@hanzo/ui/grid"
 import {
   Mic,
   MicOff,
@@ -508,8 +509,10 @@ export function AIVoice({
   )
 
   return (
-    <div
-      className={cn("w-full max-w-2xl mx-auto space-y-4", className)}
+    <Grid
+      columns={1}
+      gap={16}
+      className={cn("w-full max-w-2xl mx-auto", className)}
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
@@ -527,107 +530,120 @@ export function AIVoice({
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Audio Visualization */}
-          <div className="relative h-24 bg-muted rounded-lg overflow-hidden">
-            <canvas
-              ref={canvasRef}
-              width={400}
-              height={96}
-              className="w-full h-full"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              {!isListening && audioLevel === 0 && (
-                <div className="text-muted-foreground text-sm">
-                  Click microphone to start listening
+        <CardContent>
+          <Grid columns={1} gap={16}>
+            {/* Audio Visualization */}
+            <div className="relative h-24 bg-muted rounded-lg overflow-hidden">
+              <canvas
+                ref={canvasRef}
+                width={400}
+                height={96}
+                className="w-full h-full"
+              />
+              <Grid
+                columns={1}
+                gap={0}
+                className="absolute inset-0"
+                style={{ placeItems: "center" }}
+              >
+                {!isListening && audioLevel === 0 && (
+                  <div className="text-muted-foreground text-sm">
+                    Click microphone to start listening
+                  </div>
+                )}
+              </Grid>
+            </div>
+
+            {/* Control Buttons */}
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                variant={isListening ? "destructive" : "default"}
+                size="lg"
+                className={cn(
+                  "relative transition-all duration-200",
+                  isListening && audioLevel > 0.1 && "animate-pulse"
+                )}
+                onClick={isListening ? stopListening : startListening}
+              >
+                {isListening ? (
+                  <MicOff className="h-5 w-5" />
+                ) : (
+                  <Mic className="h-5 w-5" />
+                )}
+                <span className="ml-2">
+                  {isListening ? "Stop" : "Start"} Listening
+                </span>
+              </Button>
+
+              <Button
+                variant={isSpeaking ? "destructive" : "outline"}
+                size="lg"
+                onClick={
+                  isSpeaking ? stopSpeaking : () => speak(finalTranscript)
+                }
+                disabled={!finalTranscript.trim()}
+              >
+                {isSpeaking ? (
+                  <Square className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+                <span className="ml-2">{isSpeaking ? "Stop" : "Speak"}</span>
+              </Button>
+
+              <Button variant="outline" size="lg" onClick={clearTranscript}>
+                <RotateCcw className="h-4 w-4" />
+                <span className="ml-2">Clear</span>
+              </Button>
+            </div>
+
+            {/* Wake Word Toggle */}
+            <Grid
+              columns="minmax(0, 1fr) auto"
+              gap={16}
+              style={{ alignItems: "center" }}
+            >
+              <Grid columns={1} gap={4}>
+                <div className="text-sm font-medium">Wake Word Detection</div>
+                <div className="text-xs text-muted-foreground">
+                  Say &quot;{wakeWord}&quot; to activate
                 </div>
+              </Grid>
+              <Switch
+                checked={isWakeWordActive}
+                onCheckedChange={setIsWakeWordActive}
+              />
+            </Grid>
+
+            {/* Status Indicators */}
+            <div className="flex flex-wrap items-center gap-2">
+              {isListening && (
+                <Badge variant="default" className="animate-pulse">
+                  Listening
+                </Badge>
+              )}
+              {isSpeaking && (
+                <Badge variant="secondary" className="animate-pulse">
+                  Speaking
+                </Badge>
+              )}
+              {isWakeWordActive && (
+                <Badge variant="outline">Wake Word Active</Badge>
+              )}
+              {audioLevel > 0.1 && (
+                <Badge variant="outline">
+                  Audio: {Math.round(audioLevel * 100)}%
+                </Badge>
               )}
             </div>
-          </div>
 
-          {/* Control Buttons */}
-          <div className="flex items-center justify-center gap-4">
-            <Button
-              variant={isListening ? "destructive" : "default"}
-              size="lg"
-              className={cn(
-                "relative transition-all duration-200",
-                isListening && audioLevel > 0.1 && "animate-pulse"
-              )}
-              onClick={isListening ? stopListening : startListening}
-            >
-              {isListening ? (
-                <MicOff className="h-5 w-5" />
-              ) : (
-                <Mic className="h-5 w-5" />
-              )}
-              <span className="ml-2">
-                {isListening ? "Stop" : "Start"} Listening
-              </span>
-            </Button>
-
-            <Button
-              variant={isSpeaking ? "destructive" : "outline"}
-              size="lg"
-              onClick={isSpeaking ? stopSpeaking : () => speak(finalTranscript)}
-              disabled={!finalTranscript.trim()}
-            >
-              {isSpeaking ? (
-                <Square className="h-4 w-4" />
-              ) : (
-                <Volume2 className="h-4 w-4" />
-              )}
-              <span className="ml-2">{isSpeaking ? "Stop" : "Speak"}</span>
-            </Button>
-
-            <Button variant="outline" size="lg" onClick={clearTranscript}>
-              <RotateCcw className="h-4 w-4" />
-              <span className="ml-2">Clear</span>
-            </Button>
-          </div>
-
-          {/* Wake Word Toggle */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-sm font-medium">Wake Word Detection</div>
-              <div className="text-xs text-muted-foreground">
-                Say "{wakeWord}" to activate
+            {/* Error Display */}
+            {error && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
+                {error}
               </div>
-            </div>
-            <Switch
-              checked={isWakeWordActive}
-              onCheckedChange={setIsWakeWordActive}
-            />
-          </div>
-
-          {/* Status Indicators */}
-          <div className="flex items-center gap-2">
-            {isListening && (
-              <Badge variant="default" className="animate-pulse">
-                Listening
-              </Badge>
             )}
-            {isSpeaking && (
-              <Badge variant="secondary" className="animate-pulse">
-                Speaking
-              </Badge>
-            )}
-            {isWakeWordActive && (
-              <Badge variant="outline">Wake Word Active</Badge>
-            )}
-            {audioLevel > 0.1 && (
-              <Badge variant="outline">
-                Audio: {Math.round(audioLevel * 100)}%
-              </Badge>
-            )}
-          </div>
-
-          {/* Error Display */}
-          {error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
-              {error}
-            </div>
-          )}
+          </Grid>
         </CardContent>
       </Card>
 
@@ -637,17 +653,24 @@ export function AIVoice({
           <CardTitle className="text-lg">Transcript</CardTitle>
         </CardHeader>
         <CardContent>
-          <Textarea
-            value={finalTranscript + (transcript ? ` ${transcript}` : "")}
-            onChange={(e) => setFinalTranscript(e.target.value)}
-            placeholder="Transcript will appear here..."
-            className="min-h-[100px] resize-none"
-            readOnly={false}
-          />
-          <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-            <span>{finalTranscript.length} characters</span>
-            <span>Ctrl/Cmd + Enter to speak</span>
-          </div>
+          <Grid columns={1} gap={8}>
+            <Textarea
+              value={finalTranscript + (transcript ? ` ${transcript}` : "")}
+              onChange={(e) => setFinalTranscript(e.target.value)}
+              placeholder="Transcript will appear here..."
+              className="min-h-[100px] resize-none"
+              readOnly={false}
+            />
+            <Grid
+              columns="auto auto"
+              gap={8}
+              className="text-xs text-muted-foreground"
+              style={{ justifyContent: "space-between" }}
+            >
+              <span>{finalTranscript.length} characters</span>
+              <span>Ctrl/Cmd + Enter to speak</span>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
 
@@ -657,100 +680,113 @@ export function AIVoice({
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Voice Settings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Voice Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Voice</label>
-              <Select
-                value={selectedVoice.id}
-                onValueChange={(value) => {
-                  const voice = defaultVoices.find((v) => v.id === value)
-                  if (voice) setSelectedVoice(voice)
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {defaultVoices.map((voice) => (
-                    <SelectItem key={voice.id} value={voice.id}>
-                      {voice.name}
-                    </SelectItem>
+          <CardContent>
+            <Grid columns={1} gap={24}>
+              {/* Voice Selection */}
+              <Grid columns={1} gap={8}>
+                <label className="text-sm font-medium">Voice</label>
+                <Select
+                  value={selectedVoice.id}
+                  onValueChange={(value) => {
+                    const voice = defaultVoices.find((v) => v.id === value)
+                    if (voice) setSelectedVoice(voice)
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {defaultVoices.map((voice) => (
+                      <SelectItem key={voice.id} value={voice.id}>
+                        {voice.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Grid>
+
+              {/* Speech Controls. Three sliders where three fit, fewer where
+                  they do not — the floor measures the column, so `md:` never
+                  has to guess at the card's width. */}
+              <Grid columns={{ min: 150, max: 3 }} gap={16}>
+                <Grid columns={1} gap={8}>
+                  <label className="text-sm font-medium">Speed</label>
+                  <Slider
+                    value={[speechSpeed]}
+                    onValueChange={([value]) => setSpeechSpeed(value)}
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="text-xs text-muted-foreground text-center">
+                    {speechSpeed.toFixed(1)}x
+                  </div>
+                </Grid>
+
+                <Grid columns={1} gap={8}>
+                  <label className="text-sm font-medium">Pitch</label>
+                  <Slider
+                    value={[speechPitch]}
+                    onValueChange={([value]) => setSpeechPitch(value)}
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="text-xs text-muted-foreground text-center">
+                    {speechPitch.toFixed(1)}x
+                  </div>
+                </Grid>
+
+                <Grid columns={1} gap={8}>
+                  <label className="text-sm font-medium">Volume</label>
+                  <Slider
+                    value={[speechVolume]}
+                    onValueChange={([value]) => setSpeechVolume(value)}
+                    min={0.0}
+                    max={1.0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="text-xs text-muted-foreground text-center">
+                    {Math.round(speechVolume * 100)}%
+                  </div>
+                </Grid>
+              </Grid>
+
+              {/* Keyboard Shortcuts */}
+              <Grid columns={1} gap={8}>
+                <label className="text-sm font-medium">
+                  Keyboard Shortcuts
+                </label>
+                <Grid
+                  columns={{ min: 200, max: 2 }}
+                  gap={8}
+                  className="text-xs"
+                >
+                  {[
+                    ["Toggle listening:", "Space"],
+                    ["Stop all:", "Esc"],
+                    ["Speak transcript:", "Ctrl+Enter"],
+                  ].map(([label, key]) => (
+                    <Grid
+                      key={key}
+                      columns="minmax(0, 1fr) auto"
+                      gap={8}
+                      style={{ alignItems: "center" }}
+                    >
+                      <span>{label}</span>
+                      <kbd className="bg-muted px-1 rounded">{key}</kbd>
+                    </Grid>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Speech Controls */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Speed</label>
-                <Slider
-                  value={[speechSpeed]}
-                  onValueChange={([value]) => setSpeechSpeed(value)}
-                  min={0.5}
-                  max={2.0}
-                  step={0.1}
-                  className="w-full"
-                />
-                <div className="text-xs text-muted-foreground text-center">
-                  {speechSpeed.toFixed(1)}x
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Pitch</label>
-                <Slider
-                  value={[speechPitch]}
-                  onValueChange={([value]) => setSpeechPitch(value)}
-                  min={0.5}
-                  max={2.0}
-                  step={0.1}
-                  className="w-full"
-                />
-                <div className="text-xs text-muted-foreground text-center">
-                  {speechPitch.toFixed(1)}x
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Volume</label>
-                <Slider
-                  value={[speechVolume]}
-                  onValueChange={([value]) => setSpeechVolume(value)}
-                  min={0.0}
-                  max={1.0}
-                  step={0.1}
-                  className="w-full"
-                />
-                <div className="text-xs text-muted-foreground text-center">
-                  {Math.round(speechVolume * 100)}%
-                </div>
-              </div>
-            </div>
-
-            {/* Keyboard Shortcuts */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Keyboard Shortcuts</label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                <div className="flex justify-between">
-                  <span>Toggle listening:</span>
-                  <kbd className="bg-muted px-1 rounded">Space</kbd>
-                </div>
-                <div className="flex justify-between">
-                  <span>Stop all:</span>
-                  <kbd className="bg-muted px-1 rounded">Esc</kbd>
-                </div>
-                <div className="flex justify-between">
-                  <span>Speak transcript:</span>
-                  <kbd className="bg-muted px-1 rounded">Ctrl+Enter</kbd>
-                </div>
-              </div>
-            </div>
+                </Grid>
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       )}
-    </div>
+    </Grid>
   )
 }
 
