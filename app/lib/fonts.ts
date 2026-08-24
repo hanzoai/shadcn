@@ -13,13 +13,24 @@ import localFont from "next/font/local"
 // file bound `--font-basel-sans`, which nothing consumed, so the face was
 // downloaded and never used.
 //
-// size-adjust states the x-height correction once. Zen's x-height is 0.746 of
-// its cap where Basel's was 0.718, so at the same nominal size Zen's lowercase
-// reads about 4% larger. 96.2% is the only knob that shrinks glyphs without
-// moving a rem of layout, and it belongs on the face rather than on a type
-// scale spread across four hundred components. The matching weight correction
-// -- Basel Book is Zen 497, Basel Medium is Zen 606 -- is stated once too, on
-// Tailwind's weight scale in styles/globals.css.
+// size-adjust states the x-height correction once, and the number is 93.21%.
+//
+// DIVIDE BY THE EM, NOT THE CAP. `size-adjust` scales the em, so matching
+// x-heights means matching x-per-em:
+//
+//     Basel  xh 494 / upem 1000 = 0.4940
+//     Zen    xh 530 / upem 1000 = 0.5300
+//     factor = 0.4940 / 0.5300  = 0.9321
+//
+// This said 96.2%, from the same two faces' x-per-CAP (0.7180 / 0.7465). Those
+// cap ratios are correct and the arithmetic on them is correct — they just
+// answer a question nobody asked, because no CSS property scales a glyph by its
+// cap height. The result was type still 3.2% larger than the Basel it replaced:
+// better than the 6.8% of no correction, and close enough to read as done while
+// being wrong. @hanzo/font exports it as BASEL_XHEIGHT_FACTOR.
+//
+// The matching weight correction -- Basel Book is Zen 497, Basel Medium is Zen
+// 606 -- is stated once too, on Tailwind's weight scale in styles/globals.css.
 //
 // `src` is a path and not a package name: next/font/local hands it to the
 // bundler with a leading "./", so a bare specifier resolves as
@@ -30,8 +41,12 @@ export const fontSans = localFont({
   weight: "100 900",
   style: "normal",
   variable: "--font-sans",
-  display: "swap",
-  declarations: [{ prop: "size-adjust", value: "96.2%" }],
+  // block, never swap. `swap` paints the platform sans until the face arrives —
+  // DejaVu on Linux — so the first frame of every cold load is the one typeface
+  // this migration exists to stop showing. The face is self-hosted and ~70KB;
+  // holding the text for it costs less than showing the wrong one.
+  display: "block",
+  declarations: [{ prop: "size-adjust", value: "93.21%" }],
 })
 
 export const fontMono = localFont({
@@ -39,5 +54,5 @@ export const fontMono = localFont({
   weight: "100 900",
   style: "normal",
   variable: "--font-mono",
-  display: "swap",
+  display: "block",
 })
