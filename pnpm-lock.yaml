@@ -228,8 +228,8 @@ importers:
         specifier: ^0.3.28
         version: 0.3.34(react@19.2.4)
       '@hanzo/font':
-        specifier: ^1.8.0
-        version: 1.8.0(next@16.3.2(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(@types/node@25.9.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        specifier: ^1.8.6
+        version: 1.8.6(next@16.3.2(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(@types/node@25.9.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@hanzo/gui':
         specifier: 8.1.1
         version: 8.1.1(react-dom@19.2.4(react@19.2.4))(react-native@0.87.0(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
@@ -672,6 +672,9 @@ importers:
       '@faker-js/faker':
         specifier: ^10.4.0
         version: 10.6.0
+      '@hanzo/font':
+        specifier: ^1.8.6
+        version: 1.8.6(next@16.1.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@hookform/resolvers':
         specifier: 3.10.0
         version: 3.10.0(react-hook-form@7.85.0(react@19.2.4))
@@ -2261,10 +2264,10 @@ packages:
   '@hanzo/events@0.2.2':
     resolution: {integrity: sha512-jF800OFibLfnuEqMJUpTyLIs4fmezzXFKGGUPAHjK40FrTWsiAb4j3j1N5sbqBLAv5Ty7FA56dOo67Y+kUSqyA==}
 
-  '@hanzo/font@1.8.0':
-    resolution: {integrity: sha512-6xP+E37OMTciZqQXf5oTMXdBXYaruimdxyDMkR5wzqrlo5WDdzn4a/bnd+JXLNbdo8y0Y2Qn76zZ0dDjfKGvdQ==}
+  '@hanzo/font@1.8.6':
+    resolution: {integrity: sha512-WgBlK2et8jHK/hQW+8yPifo7I3HXGtOqG4qECuBO/88U8/g/rJSgC+nHs/ALVwHBlfx3nwuREIt9TnZOD4Hetw==}
     peerDependencies:
-      next: '>=14.2.25'
+      next: '>=14.2.32'
 
   '@hanzo/gui@8.1.1':
     resolution: {integrity: sha512-ZZ9h2B8DonQVjefVXxekd1rZ+Gftp5ZLhrf8DWf7/E+hVbwzTpwdumcAWPepovV4C1GodiER15x8F7Z8/JLxnw==}
@@ -2321,7 +2324,7 @@ packages:
       lucide-react: '>=0.456.0'
       mermaid: ^10.0.0
       mobx: ^6.12.3
-      next: '>=14.2.25'
+      next: '>=14.2.32'
       next-themes: ^0.2.1 || ^0.3.0 || ^0.4.0
       react: 19.2.4
       react-day-picker: ^9.0.0
@@ -2395,7 +2398,7 @@ packages:
       '@hanzogui/next-theme': '>=8.1.0'
       '@hanzogui/telemetry': '>=8.1.0'
       '@hanzogui/toast': '>=8.1.0'
-      next: '>=14.2.25'
+      next: '>=14.2.32'
       next-themes: '>=0.2.1'
       react: 19.2.4
       react-dom: 19.2.4
@@ -12729,7 +12732,11 @@ snapshots:
 
   '@hanzo/events@0.2.2': {}
 
-  '@hanzo/font@1.8.0(next@16.3.2(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(@types/node@25.9.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@hanzo/font@1.8.6(next@16.1.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+    dependencies:
+      next: 16.1.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+
+  '@hanzo/font@1.8.6(next@16.3.2(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(@types/node@25.9.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       next: 16.3.2(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.62.1)(@types/node@25.9.5)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
