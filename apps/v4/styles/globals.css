@@ -21,9 +21,9 @@
 @theme inline {
   --breakpoint-3xl: 1600px;
   --breakpoint-4xl: 2000px;
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-zen-sans);
   --font-heading: var(--font-heading);
-  --font-mono: var(--font-mono);
+  --font-mono: var(--font-zen-mono);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
