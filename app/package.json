@@ -35,7 +35,7 @@
     "@hanzo/docs-mdx": "14.3.0",
     "@hanzo/docs-ui": "16.5.3",
     "@hanzo/event": "^0.3.28",
-    "@hanzo/font": "^1.8.0",
+    "@hanzo/font": "^1.8.6",
     "@hanzo/gui": "8.1.1",
     "@hanzo/logo": "^1.0.5",
     "@hanzo/ui": "^8.3.1",
