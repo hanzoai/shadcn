@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@iarna/toml": "^2.2.5",
-    "@npmcli/package-json": "^5.1.0",
-    "semver": "^7.6.0"
+    "@iarna/toml": "catalog:",
+    "@npmcli/package-json": "catalog:",
+    "semver": "catalog:"
   }
 }

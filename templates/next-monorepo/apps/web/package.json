@@ -12,21 +12,21 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hanzo/font": "^1.8.6",
+    "@hanzo/font": "catalog:",
     "@workspace/ui": "workspace:*",
-    "next": "16.2.1",
-    "next-themes": "^0.4.6",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "next": "catalog:",
+    "next-themes": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18",
-    "@types/node": "^25.1.0",
-    "@types/react": "^19.2.10",
-    "@types/react-dom": "^19.2.3",
+    "@tailwindcss/postcss": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
-    "eslint": "^9.39.2",
-    "typescript": "^6.0.2"
+    "eslint": "catalog:",
+    "typescript": "catalog:"
   }
 }
