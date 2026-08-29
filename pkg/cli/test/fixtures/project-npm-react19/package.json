@@ -5,7 +5,7 @@
   "author": "shadcn",
   "license": "MIT",
   "dependencies": {
-    "react": "19.0.0",
-    "react-day-picker": "8.0.0"
+    "react": "catalog:",
+    "react-day-picker": "catalog:"
   }
 }

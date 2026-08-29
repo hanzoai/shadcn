@@ -9,6 +9,6 @@
     "lint": "next lint"
   },
   "devDependencies": {
-    "tailwindcss": "4.1.2"
+    "tailwindcss": "catalog:"
   }
 }
