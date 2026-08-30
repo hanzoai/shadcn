@@ -99,7 +99,7 @@ catalog:
   '@react-router/node': '^7.15.1'
   '@react-router/serve': '^7.15.1'
   '@remixicon/react': '^4.9.0'
-  '@tailwindcss/vite': '^4.3.0'
+  '@tailwindcss/vite': '^4.3.3'
   '@turbo/gen': '^2.8.1'
   '@types/node': '26.4.0'
   '@types/react': '19.2.18'
