@@ -40,7 +40,7 @@ catalog:
   '@hanzo/font': '1.9.2'
   '@hanzo/gui': '8.3.1'
   '@hanzo/logo': '1.0.26'
-  '@hanzo/ui': '8.27.0'
+  '@hanzo/ui': '8.27.2'
   '@hanzo/ui-shadcn': '5.9.1'
   '@hanzogui/animations-css': '8.3.1'
   '@hanzogui/config': '8.3.1'
