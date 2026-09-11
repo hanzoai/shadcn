@@ -12,4 +12,10 @@ on:
 jobs:
   cicd:
     uses: hanzoai/ci/.github/workflows/build.yml@v1
+    with:
+      # buildx, not the door: this repo's images declare `build_secrets:` and the
+      # door mounts no KMS, so a delegated build would bake empty values. One
+      # runner means one architecture — drop this line once the door can read a
+      # build secret.
+      mode: buildx
     secrets: inherit
