@@ -103,7 +103,7 @@ catalog:
   '@types/react': '19.2.18'
   '@types/react-dom': '19.2.5'
   '@typescript-eslint/eslint-plugin': '^8.68.0'
-  '@typescript-eslint/parser': '^8.68.0'
+  '@typescript-eslint/parser': '^8.70.0'
   'eslint': '^10.9.1'
   'eslint-config-prettier': '^10.1.8'
   'eslint-plugin-only-warn': '^1.1.0'
