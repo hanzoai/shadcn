@@ -111,7 +111,7 @@ catalog:
   'react': '19.2.8'
   'react-dom': '19.2.8'
   'tailwindcss': '^4.3.3'
-  'turbo': '^2.10.12'
+  'turbo': '^2.10.13'
   'typescript': '7.0.2'
   'vite': '^8.2.2'
   'vite-tsconfig-paths': '^6.1.1'
