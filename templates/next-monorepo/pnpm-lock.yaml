@@ -10,8 +10,8 @@ catalogs:
       specifier: ^10.0.1
       version: 10.0.1
     '@hanzo/font':
-      specifier: 1.9.2
-      version: 1.9.2
+      specifier: 1.11.0
+      version: 1.11.0
     '@next/eslint-plugin-next':
       specifier: ^16.3.3
       version: 16.4.6
@@ -118,7 +118,7 @@ importers:
     dependencies:
       '@hanzo/font':
         specifier: 'catalog:'
-        version: 1.9.2(next@16.3.3(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
+        version: 1.11.0(next@16.3.3(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -531,8 +531,8 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@hanzo/font@1.9.2':
-    resolution: {integrity: sha512-CXKXhfRgAj9SnhRJtraS6jEToGz74hbrMSJm85Kp8y6uN64zOH+IvohpWT/Surh9Qn1KWIGXsIx216JMa++X6A==}
+  '@hanzo/font@1.11.0':
+    resolution: {integrity: sha512-aZVL3k4ub3PP2WmwB9jKaTtfxXZ0wTpNaJR1HoCjpLiCaDBrg993081yVctRCIp89qcFHQkAptP8j3lYu1edjQ==}
     peerDependencies:
       next: '>=13.2.0'
 
@@ -3284,7 +3284,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@hanzo/font@1.9.2(next@16.3.3(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
+  '@hanzo/font@1.11.0(next@16.3.3(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
     dependencies:
       next: 16.3.3(@types/node@26.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
 
