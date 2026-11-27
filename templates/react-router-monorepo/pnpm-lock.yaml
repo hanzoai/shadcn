@@ -13,8 +13,8 @@ catalogs:
       specifier: ^7.15.1
       version: 7.18.7
     '@react-router/node':
-      specifier: ^7.15.1
-      version: 7.16.0
+      specifier: ^8.5.3
+      version: 8.5.3
     '@react-router/serve':
       specifier: ^7.15.1
       version: 7.18.7
@@ -112,7 +112,7 @@ importers:
     dependencies:
       '@react-router/node':
         specifier: 'catalog:'
-        version: 7.16.0(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)
+        version: 8.5.3(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)
       '@react-router/serve':
         specifier: 'catalog:'
         version: 7.18.7(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)
@@ -1472,22 +1472,22 @@ packages:
       typescript:
         optional: true
 
-  '@react-router/node@7.16.0':
-    resolution: {integrity: sha512-3S54GArZETvcBHt0cFNJS5ZU66bCNVOoS44MVcGjiGjArBXvWx8xIQ5FO9n1azKGEBpDmJN7NbA+cf3oMCJv3g==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react-router: 7.16.0
-      typescript: ^5.1.0 || ^6.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   '@react-router/node@7.18.7':
     resolution: {integrity: sha512-snnbn4UzF/NLMmSZoouAsOkUJObOfxq+32Roy+gzKodrfGL9nkAeG9E/RERVuOJXgC94TwtZzT2MwKka9xNODw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react-router: 7.18.7
       typescript: ^5.1.0 || ^6.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  '@react-router/node@8.5.3':
+    resolution: {integrity: sha512-QqrRKldHLGzcbbZQVPbLSQHLSGG/G3TbqqtQSiEBgViFQQik9d1BmnM9L95yT1q+bhHhbVlxa3Qovvq2JbF6Pw==}
+    engines: {node: '>=22.22.0'}
+    peerDependencies:
+      react-router: 8.5.3
+      typescript: ^5.1.0 || ^6.0.0 || ^7.0.0
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -1501,6 +1501,9 @@ packages:
 
   '@remix-run/node-fetch-server@0.13.3':
     resolution: {integrity: sha512-UfjOXed/DQteaM5VyTfqTeGpHwyL2J5aoRGY6cydip4tt1ehNNeSwuXCC7AEGE0RWBs/7bgKxYkL/B/+UDe4AA==}
+
+  '@remix-run/node-fetch-server@0.14.2':
+    resolution: {integrity: sha512-1cpM/f5i1ka/9CUMBwZXZp7Bn92x8VQjzg+F4eEe88DlVdNHkAKrf/vvbZoYgdkfy2bWHtGC6LQGLmojEqOF4Q==}
 
   '@remixicon/react@4.9.0':
     resolution: {integrity: sha512-5/jLDD4DtKxH2B4QVXTobvV1C2uL8ab9D5yAYNtFt+w80O0Ys1xFOrspqROL3fjrZi+7ElFUWE37hBfaAl6U+Q==}
@@ -5112,16 +5115,16 @@ snapshots:
     optionalDependencies:
       typescript: 7.0.2
 
-  '@react-router/node@7.16.0(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)':
+  '@react-router/node@7.18.7(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)':
     dependencies:
       '@mjackson/node-fetch-server': 0.2.0
       react-router: 7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     optionalDependencies:
       typescript: 7.0.2
 
-  '@react-router/node@7.18.7(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)':
+  '@react-router/node@8.5.3(react-router@7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(typescript@7.0.2)':
     dependencies:
-      '@mjackson/node-fetch-server': 0.2.0
+      '@remix-run/node-fetch-server': 0.14.2
       react-router: 7.18.7(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     optionalDependencies:
       typescript: 7.0.2
@@ -5142,6 +5145,8 @@ snapshots:
       - typescript
 
   '@remix-run/node-fetch-server@0.13.3': {}
+
+  '@remix-run/node-fetch-server@0.14.2': {}
 
   '@remixicon/react@4.9.0(react@19.2.8)':
     dependencies:
